@@ -11,6 +11,8 @@ import java.util.*
  */
 fun searchHeartRate(context: Context, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit) = searchDevice(context,"HEARTRATE", result)
 
+fun searchBike(context: Context, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit) = searchDevice(context,"BIKE_SPDCAD", result)
+
 private fun searchDevice(context: Context, deviceType: String, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit)
 {
     val devices = EnumSet.of(DeviceType.valueOf(deviceType))

@@ -6,3 +6,7 @@ function setHeartRate(dataString: string) {
     var data = Number.parseInt(dataString)
     moduleInstance.onHeartRate(data)
 }
+
+function setTest(test: string) {
+    alert(test)
+}

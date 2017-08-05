@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".Activities.MainActivity"
+                  android:label="super fit"
                   android:configChanges="orientation"
                   android:screenOrientation="portrait">
 

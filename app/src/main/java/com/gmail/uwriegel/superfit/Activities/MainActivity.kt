@@ -9,7 +9,7 @@ import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.os.PowerManager
-
+import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         heartRateMonitor = HeartRateMonitor(context = this) {
             this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
         }
+
+        bikeMonitor = BikeMonitor(this) {
+            this.runOnUiThread { webView.loadUrl("javascript:setTest('$it')") }
+        }
     }
 
     override fun onResume() {
@@ -49,4 +53,5 @@ class MainActivity : AppCompatActivity() {
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var heartRateMonitor: HeartRateMonitor? = null
+    private var bikeMonitor: BikeMonitor? = null
 }

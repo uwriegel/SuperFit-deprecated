@@ -2,12 +2,7 @@ package com.gmail.uwriegel.superfit.AntPlusSensors
 
 import android.content.Context
 import com.dsi.ant.plugins.antplus.pcc.AntPlusHeartRatePcc
-import com.dsi.ant.plugins.antplus.pcc.defines.DeviceState
-import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
-import com.dsi.ant.plugins.antplus.pccbase.AntPluginPcc
-import java.math.BigDecimal
-import java.util.*
 
 /**
  * Created by urieg on 05.08.2017.
@@ -23,7 +18,7 @@ class HeartRateMonitor {
     }
 
     fun subscribe(context: Context) {
-        AntPlusHeartRatePcc.requestAccess(context, deviceNumber, 0, { heartRateController, resultCode, p2 ->
+        AntPlusHeartRatePcc.requestAccess(context, deviceNumber, 0, { heartRateController, resultCode, _ ->
             when (resultCode) {
                 RequestAccessResult.SUCCESS -> subscribeToHeartRate(heartRateController)
             }
