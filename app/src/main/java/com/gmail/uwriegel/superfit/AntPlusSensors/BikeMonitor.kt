@@ -25,24 +25,32 @@ class BikeMonitor {
     private fun subscribe(context: Context) {
         bsdReleaseHandle = AntPlusBikeSpeedDistancePcc.requestAccess(context, deviceNumber, 0, true, { bikeController, resultCode, _ ->
             when (resultCode) {
-                RequestAccessResult.SUCCESS ->
-                    run {
-                        subScribeToBike(bikeController)
-                        if (bikeController.isSpeedAndCadenceCombinedSensor) {
-
-                        }
-                    }
+                RequestAccessResult.SUCCESS -> subScribeToBike(bikeController)
             }
         }, {
         })
     }
 
-    private fun subScribeToBike(bikeController: AntPlusBikeSpeedDistancePcc) = bikeController.subscribeCalculatedSpeedEvent(object:
-            AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(BigDecimal(2.096)) {
-        override fun onNewCalculatedSpeed(estTimestamp: Long, flags: EnumSet<EventFlag>?, calculatedSpeedInMs: BigDecimal?) {
-            val calculatedSpeed = calculatedSpeedInMs?.toFloat()!! * 3.6
+    private fun subScribeToBike(bikeController: AntPlusBikeSpeedDistancePcc) {
+        bikeController.subscribeCalculatedSpeedEvent(object:
+                AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(BigDecimal(wheelCircumference)) {
+            override fun onNewCalculatedSpeed(estTimestamp: Long, flags: EnumSet<EventFlag>?, calculatedSpeedInMs: BigDecimal?) {
+                if (calculatedSpeedInMs != null) {
+                    val calculatedSpeed = calculatedSpeedInMs.toFloat() * 3.6
+                }
+            }
+        })
+
+        bikeController.subscribeCalculatedAccumulatedDistanceEvent(object: AntPlusBikeSpeedDistancePcc.CalculatedAccumulatedDistanceReceiver(BigDecimal(wheelCircumference)) {
+            override fun onNewCalculatedAccumulatedDistance(estTimestamp: Long, flags: EnumSet<EventFlag>?, distance: BigDecimal?) {
+
+            }
+        })
+
+        if (bikeController.isSpeedAndCadenceCombinedSensor) {
+
         }
-    })
+    }
 
     private fun destroy() {
         bsdReleaseHandle?.close();
@@ -51,4 +59,5 @@ class BikeMonitor {
     private var bsdReleaseHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
     private var deviceName = ""
     private var deviceNumber = 0
+    private val wheelCircumference = 2.096
 }
