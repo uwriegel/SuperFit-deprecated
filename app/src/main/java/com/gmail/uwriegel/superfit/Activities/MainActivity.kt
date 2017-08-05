@@ -1,5 +1,6 @@
 package com.gmail.uwriegel.superfit.Activities
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebChromeClient
@@ -7,6 +8,9 @@ import android.webkit.WebView
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.R
 import kotlinx.android.synthetic.main.activity_main.*
+import android.os.PowerManager
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,5 +33,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag")
+        this.wakeLock?.acquire()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        this.wakeLock?.release()
+    }
+
+    private var wakeLock: PowerManager.WakeLock? = null
     private var heartRateMonitor: HeartRateMonitor? = null
 }
