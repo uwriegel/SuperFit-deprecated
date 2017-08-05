@@ -1,0 +1,20 @@
+body {
+    font-family: sans-serif;
+    padding: 0px;
+    margin: 0px;
+}
+
+.label {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+#mainDisplay {
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    font-size: 150px;
+    font-weight: 600;
+}
