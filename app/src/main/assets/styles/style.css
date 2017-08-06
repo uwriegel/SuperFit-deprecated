@@ -9,12 +9,17 @@ body {
     margin-top: 10px;
 }
 
-#mainDisplay {
+.mainDisplay {
     display: flex;
     justify-content: center;
 }
 
 .content {
-    font-size: 150px;
+    font-size: 140px;
     font-weight: 600;
+}
+
+.contentSmall {
+    font-size: 100px;
+    font-weight: 400;
 }

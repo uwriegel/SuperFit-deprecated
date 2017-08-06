@@ -26,8 +26,6 @@ class HeartRateMonitor {
         })
     }
 
-    var lastTimeStamp = 0L
-
     fun subscribeToHeartRate(heartRateController: AntPlusHeartRatePcc) = heartRateController.subscribeHeartRateDataEvent { estTimestamp, eventFlags, computedHeartRate,
                                                                                                                            heartBeatCount, heartBeatEventTime4, dataState ->
         run {
@@ -39,6 +37,7 @@ class HeartRateMonitor {
     }
 
     val onNewHeartRate: (newHeartRate: Int)->Unit
+    var lastTimeStamp = 0L
     var deviceName = ""
     var deviceNumber = 0
 }

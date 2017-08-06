@@ -32,9 +32,11 @@ class MainActivity : AppCompatActivity() {
             this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
         }
 
-        bikeMonitor = BikeMonitor(this) {
-            this.runOnUiThread { webView.loadUrl("javascript:setTest('$it')") }
-        }
+        bikeMonitor = BikeMonitor(this, {
+            this.runOnUiThread { webView.loadUrl("javascript:setSpeed('$it')") }
+        }, {
+            this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
+        })
     }
 
     override fun onResume() {

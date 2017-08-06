@@ -2,17 +2,30 @@ class Module
 {
     constructor() {
         document.addEventListener("DOMContentLoaded", () => {
-            this.heartRateDiv = document.getElementById('heartRate')
+            this.heartRateElement = document.getElementById('heartRate')
+            this.speedElement = document.getElementById('speed')
+            this.distanceElement = document.getElementById('distance')
         })
     }
 
     onHeartRate(rate: number) {
-        console.log(`Im Module: ${rate}`)
-        if (this.heartRateDiv)
-            this.heartRateDiv.innerText = rate.toString()
+        if (this.heartRateElement)
+            this.heartRateElement.innerText = rate.toString()
     }
 
-    private heartRateDiv: HTMLElement
+    onSpeed(rate: number) {
+        if (this.speedElement)
+            this.speedElement.innerText = rate.toFixed(1)
+    }
+
+    onDistance(rate: number) {
+        if (this.distanceElement)
+            this.distanceElement.innerText = rate.toFixed(2)
+    }
+
+    private heartRateElement: HTMLElement
+    private speedElement: HTMLElement
+    private distanceElement: HTMLElement
 }
 
 var moduleInstance = new Module()

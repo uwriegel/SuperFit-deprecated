@@ -7,6 +7,16 @@ function setHeartRate(dataString: string) {
     moduleInstance.onHeartRate(data)
 }
 
+function setSpeed(dataString: string) {
+    var data = Number.parseFloat(dataString)
+    moduleInstance.onSpeed(data)
+}
+
+function setDistance(dataString: string) {
+    var data = Number.parseFloat(dataString)
+    moduleInstance.onDistance(data)
+}
+
 function setTest(test: string) {
     alert(test)
 }
