@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             this.runOnUiThread { webView.loadUrl("javascript:setSpeed('$it')") }
         }, {
             this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
+        }, {
+            this.runOnUiThread { webView.loadUrl("javascript:setCadence('$it')") }
         })
     }
 

@@ -1,6 +1,7 @@
 package com.gmail.uwriegel.superfit.AntPlusSensors
 
 import android.content.Context
+import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeCadencePcc
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeSpeedDistancePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
@@ -13,10 +14,10 @@ import java.util.*
  * Created by urieg on 05.08.2017.
  */
 class BikeMonitor {
-    constructor(context: Context, onSpeed: (speed: Float)->Unit, onDistance: (distance: Float)->Unit) {
-
+    constructor(context: Context, onSpeed: (speed: Float)->Unit, onDistance: (distance: Float)->Unit, onCadence: (cadence: Float)->Unit) {
         this.onSpeed = onSpeed
         this.onDistance = onDistance
+        this.onCadence = onCadence
 
         searchBike(context, {
             deviceName = it.deviceDisplayName
@@ -28,13 +29,13 @@ class BikeMonitor {
     private fun subscribe(context: Context) {
         bsdReleaseHandle = AntPlusBikeSpeedDistancePcc.requestAccess(context, deviceNumber, 0, true, { bikeController, resultCode, _ ->
             when (resultCode) {
-                RequestAccessResult.SUCCESS -> subScribeToBike(bikeController)
+                RequestAccessResult.SUCCESS -> subScribeToBikeSpeed(context, bikeController)
             }
         }, {
         })
     }
 
-    private fun subScribeToBike(bikeController: AntPlusBikeSpeedDistancePcc) {
+    private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {
         var lastTimeStamp = 0L
         var lastDistanceTimeStamp = 0L
 
@@ -64,17 +65,31 @@ class BikeMonitor {
         })
 
         if (bikeController.isSpeedAndCadenceCombinedSensor) {
+            bcReleaseHandle = AntPlusBikeCadencePcc.requestAccess(context, bikeController.antDeviceNumber, 0, true,{ bikeController, resultCode, _ ->
+                when (resultCode) {
+                    RequestAccessResult.SUCCESS -> subScribeToBikeCadence(bikeController)
+                }
+            }, {
+            })
+        }
+    }
 
+    private fun subScribeToBikeCadence(bikeController: AntPlusBikeCadencePcc) {
+        bikeController.subscribeCalculatedCadenceEvent { estTimestamp, flags, calculatedCadence ->
+            onCadence((calculatedCadence.toFloat()))
         }
     }
 
     private fun destroy() {
         bsdReleaseHandle?.close();
+        bcReleaseHandle?.close();
     }
 
     private var onSpeed: (speed: Float)->Unit
     private var onDistance: (distance: Float)->Unit
+    private var onCadence: (cadence: Float)->Unit
     private var bsdReleaseHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
+    private var bcReleaseHandle: PccReleaseHandle<AntPlusBikeCadencePcc>? = null
     private var deviceName = ""
     private var deviceNumber = 0
     private val wheelCircumference = 2.096

@@ -17,6 +17,11 @@ function setDistance(dataString: string) {
     moduleInstance.onDistance(data)
 }
 
+function setCadence(dataString: string) {
+    var data = Number.parseInt(dataString)
+    moduleInstance.onCadence(data)
+}
+
 function setTest(test: string) {
     alert(test)
 }
