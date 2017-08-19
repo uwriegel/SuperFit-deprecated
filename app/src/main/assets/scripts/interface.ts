@@ -23,5 +23,5 @@ function setCadence(dataString: string) {
 }
 
 function setTest(test: string) {
-    alert(test)
+    moduleInstance.onTest(test)
 }

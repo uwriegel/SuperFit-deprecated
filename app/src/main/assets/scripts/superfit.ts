@@ -6,6 +6,7 @@ class Module
             this.speedElement = document.getElementById('speed')
             this.distanceElement = document.getElementById('distance')
             this.cadenceElement = document.getElementById('cadence')
+            this.testElement = document.getElementById('testSpan')
         })
     }
 
@@ -29,10 +30,18 @@ class Module
             this.cadenceElement.innerText = rate.toString()
     }
 
+    onTest(test: string) {
+        if (this.testElement)
+            this.testElement.innerText = test
+        else
+            alert(test)
+    }
+
     private heartRateElement: HTMLElement
     private speedElement: HTMLElement
     private distanceElement: HTMLElement
     private cadenceElement: HTMLElement
+    private testElement: HTMLElement
 }
 
 var moduleInstance = new Module()
