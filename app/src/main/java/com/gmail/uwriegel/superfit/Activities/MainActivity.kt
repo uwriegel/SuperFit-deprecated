@@ -9,7 +9,16 @@ import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.os.PowerManager
+import android.view.View
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
+import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +62,20 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         this.wakeLock?.release()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            val decorView = window.decorView
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
     }
 
     private var wakeLock: PowerManager.WakeLock? = null
