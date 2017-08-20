@@ -6,6 +6,9 @@ import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeSpeedDistancePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
+import com.gmail.uwriegel.superfit.continueTimer
+import com.gmail.uwriegel.superfit.initializeTimer
+import com.gmail.uwriegel.superfit.pauseTimer
 import java.math.BigDecimal
 import java.util.*
 
@@ -14,10 +17,17 @@ import java.util.*
  * Created by urieg on 05.08.2017.
  */
 class BikeMonitor {
-    constructor(context: Context, onSpeed: (speed: Float)->Unit, onDistance: (distance: Float)->Unit, onCadence: (cadence: Float)->Unit) {
+    constructor(context: Context, onSpeed: (speed: Float)->Unit, onDistance: (distance: Float)->Unit, onCadence: (cadence: Float)->Unit,
+                onMaxSpeed: (maxSpeed: Float)->Unit, onTimeSpan: (timeSpan: Long, averageSpeed: Float)->Unit) {
         this.onSpeed = onSpeed
         this.onDistance = onDistance
         this.onCadence = onCadence
+        this.onMaxSpeed = onMaxSpeed
+        this.onTimeSpan = onTimeSpan
+
+        initializeTimer {
+            onTimeSpan(it, (if (it > 0) currentDistance / it else 0f) * 3600f)
+        }
 
         searchBike(context, {
             deviceName = it.deviceDisplayName
@@ -38,6 +48,7 @@ class BikeMonitor {
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {
         var lastTimeStamp = 0L
         var lastDistanceTimeStamp = 0L
+        var speedIsNull = true
 
         bikeController.subscribeCalculatedSpeedEvent(object:
                 AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(BigDecimal(wheelCircumference)) {
@@ -46,6 +57,20 @@ class BikeMonitor {
                     if (lastTimeStamp + 500 < estTimestamp ) {
                         val calculatedSpeed = calculatedSpeedInMs.toFloat() * 3.6f
                         onSpeed(calculatedSpeed)
+
+                        if (calculatedSpeed > maxSpeed) {
+                            maxSpeed = calculatedSpeed
+                            onMaxSpeed(maxSpeed)
+                        }
+
+                        if (calculatedSpeed > 0.0f && speedIsNull) {
+                            speedIsNull = false
+                            continueTimer()
+                        } else if (calculatedSpeed == 0.0f && !speedIsNull) {
+                            speedIsNull = true
+                            pauseTimer()
+                        }
+
                         lastTimeStamp = estTimestamp
                     }
                 }
@@ -57,7 +82,8 @@ class BikeMonitor {
             override fun onNewCalculatedAccumulatedDistance(estTimestamp: Long, flags: EnumSet<EventFlag>?, distance: BigDecimal?) {
                 if (distance != null) {
                     if (lastDistanceTimeStamp + 1000 < estTimestamp ) {
-                        onDistance(distance.divide(mToKm, 3, BigDecimal.ROUND_HALF_UP).toFloat())
+                        currentDistance = distance.divide(mToKm, 3, BigDecimal.ROUND_HALF_UP).toFloat()
+                        onDistance(currentDistance)
                         lastDistanceTimeStamp = estTimestamp
                     }
                 }
@@ -85,12 +111,17 @@ class BikeMonitor {
         bcReleaseHandle?.close();
     }
 
-    private var onSpeed: (speed: Float)->Unit
-    private var onDistance: (distance: Float)->Unit
-    private var onCadence: (cadence: Float)->Unit
+    private val onSpeed: (speed: Float)->Unit
+    private val onDistance: (distance: Float)->Unit
+    private val onCadence: (cadence: Float)->Unit
+    private val onMaxSpeed: (maxSpeed: Float)->Unit
+    private val onTimeSpan: (timeSpan: Long, averageSpeed: Float)->Unit
+    private val wheelCircumference = 2.096
+
     private var bsdReleaseHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
     private var bcReleaseHandle: PccReleaseHandle<AntPlusBikeCadencePcc>? = null
     private var deviceName = ""
     private var deviceNumber = 0
-    private val wheelCircumference = 2.096
+    private var maxSpeed = 0.0f
+    private var currentDistance = 0f
 }

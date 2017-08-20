@@ -47,6 +47,10 @@ class MainActivity : AppCompatActivity() {
             this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
         }, {
             this.runOnUiThread { webView.loadUrl("javascript:setCadence('$it')") }
+        }, {
+            this.runOnUiThread { webView.loadUrl("javascript:setMaxSpeed('$it')") }
+        }, { timeSpan: Long, avgSpeed: Float -> this.runOnUiThread({
+            webView.loadUrl("javascript:setTimeSpan('$timeSpan', '$avgSpeed')")})
         })
     }
 

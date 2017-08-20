@@ -6,6 +6,9 @@ class Module
             this.speedElement = document.getElementById('speed')
             this.distanceElement = document.getElementById('distance')
             this.cadenceElement = document.getElementById('cadence')
+            this.timeElement = document.getElementById('time')
+            this.avgSpeedElement = document.getElementById('avgSpeed')
+            this.maxSpeedElement = document.getElementById('maxSpeed')
             this.testElement = document.getElementById('testSpan')
         })
     }
@@ -30,6 +33,29 @@ class Module
             this.cadenceElement.innerText = rate.toString()
     }
 
+    onMaxSpeed(speed: number) {
+        if (this.maxSpeedElement)
+            this.maxSpeedElement.innerText = speed.toFixed(1)
+    }
+
+    onTimeSpan(timeSpan: number) {
+        if (this.timeElement) {
+            var hour = Math.floor(timeSpan / 3600)
+            timeSpan %= 3600
+            var minute = Math.floor(timeSpan / 60)
+            timeSpan %= 60
+            if (hour)
+                this.timeElement.innerText = `${hour}:${this.pad(minute, 2)}:${this.pad(timeSpan, 2)}`
+            else
+                this.timeElement.innerText = `${this.pad(minute, 2)}:${this.pad(timeSpan, 2)}`
+        }
+    }
+
+    onAvgSpeed(avgSpeed: number) {
+        if (this.avgSpeedElement)
+            this.avgSpeedElement.innerText = avgSpeed.toFixed(1)
+    }
+
     onTest(test: string) {
         if (this.testElement)
             this.testElement.innerText = test
@@ -37,10 +63,20 @@ class Module
             alert(test)
     }
 
+    private pad(num, size) {
+        var s = num + ""
+        while (s.length < size)
+            s = "0" + s
+        return s
+    }
+
     private heartRateElement: HTMLElement
     private speedElement: HTMLElement
     private distanceElement: HTMLElement
     private cadenceElement: HTMLElement
+    private timeElement: HTMLElement
+    private avgSpeedElement: HTMLElement
+    private maxSpeedElement: HTMLElement
     private testElement: HTMLElement
 }
 
