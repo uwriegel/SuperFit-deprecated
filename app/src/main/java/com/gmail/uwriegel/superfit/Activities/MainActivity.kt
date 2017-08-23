@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Nur ein Linux test
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
 //        webSettings.domStorageEnabled = true
