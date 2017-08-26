@@ -26,7 +26,7 @@ class HeartRateMonitor {
         })
     }
 
-    fun subscribeToHeartRate(heartRateController: AntPlusHeartRatePcc) = heartRateController.subscribeHeartRateDataEvent { estTimestamp, eventFlags, computedHeartRate,
+    fun subscribeToHeartRate(heartRateController: AntPlusHeartRatePcc) = heartRateController.subscribeHeartRateDataEvent { estTimestamp, _, computedHeartRate,
                                                                                                                            heartBeatCount, heartBeatEventTime4, dataState ->
         run {
             if (lastTimeStamp + 1000 < estTimestamp ) {

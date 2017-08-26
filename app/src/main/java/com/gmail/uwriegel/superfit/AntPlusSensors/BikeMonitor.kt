@@ -101,7 +101,7 @@ class BikeMonitor {
     }
 
     private fun subScribeToBikeCadence(bikeController: AntPlusBikeCadencePcc) {
-        bikeController.subscribeCalculatedCadenceEvent { estTimestamp, flags, calculatedCadence ->
+        bikeController.subscribeCalculatedCadenceEvent { _, _, calculatedCadence ->
             onCadence((calculatedCadence.toFloat()))
         }
     }
