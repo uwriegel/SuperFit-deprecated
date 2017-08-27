@@ -1,7 +1,22 @@
+declare class IScroll{
+    constructor(element: string, param: any)
+}
+
 class Module 
 {
     constructor() {
         document.addEventListener("DOMContentLoaded", () => {
+            this.theScroll = new IScroll('#wrapper',
+            {
+                scrollbars: true,
+                interactiveScrollbars: true,
+                click: true,
+                disablePointer: true,
+                disableTouch: false,
+                fadeScrollbars: true,
+                shrinkScrollbars: 'clip'
+            })
+
             this.heartRateElement = document.getElementById('heartRate')
             this.speedElement = document.getElementById('speed')
             this.distanceElement = document.getElementById('distance')
@@ -78,6 +93,7 @@ class Module
     private avgSpeedElement: HTMLElement
     private maxSpeedElement: HTMLElement
     private testElement: HTMLElement
+    private theScroll: any
 }
 
 var moduleInstance = new Module()

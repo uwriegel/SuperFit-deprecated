@@ -4,6 +4,23 @@ body {
     margin: 0px;
     background: black;
     color: white;
+} 
+
+#wrapper {
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+#scroll-content {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    padding: 0;
 }
 
 .label {
