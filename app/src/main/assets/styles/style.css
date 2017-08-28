@@ -2,18 +2,18 @@ body {
     font-family: sans-serif;
     padding: 0px;
     margin: 0px;
-    background: black;
-    color: white;
-} 
+}
 
 #wrapper {
     position: absolute;
-    z-index: 1;
+    z-index: 100;
     top: 0px;
     bottom: 0px;
-    left: 0;
+    left: -0%;
     width: 100%;
     overflow: hidden;
+    background: black;
+    color: white;
 }
 
 #scroll-content {
