@@ -1,6 +1,9 @@
 package com.gmail.uwriegel.superfit.Activities
 
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebChromeClient
@@ -11,15 +14,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.os.PowerManager
 import android.view.View
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
-import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
-import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-
-
-
+import android.app.PendingIntent
+import android.graphics.BitmapFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Nur ein Linux test
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
 //        webSettings.domStorageEnabled = true
@@ -36,7 +31,6 @@ class MainActivity : AppCompatActivity() {
 
         webView.isHapticFeedbackEnabled = true
         webView.loadUrl("file:///android_asset/index.html")
-
 
         heartRateMonitor = HeartRateMonitor(context = this) {
             this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
@@ -53,6 +47,22 @@ class MainActivity : AppCompatActivity() {
         }, { timeSpan: Long, avgSpeed: Float -> this.runOnUiThread({
             webView.loadUrl("javascript:setTimeSpan('$timeSpan', '$avgSpeed')")})
         })
+
+        val intent = Intent(this, MainActivity::class.java)
+
+        val pendingIntent = PendingIntent.getActivity(this,
+                NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = Notification.Builder(this)
+                .setContentTitle("Notification Title")
+                .setContentText("Sample Notification Content")
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background))
+        val notification = builder.build()
+        notification.flags = notification.flags or (Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     override fun onResume() {
@@ -67,6 +77,9 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         this.wakeLock?.release()
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -86,4 +99,6 @@ class MainActivity : AppCompatActivity() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var heartRateMonitor: HeartRateMonitor? = null
     private var bikeMonitor: BikeMonitor? = null
+
+    private val NOTIFICATION_ID= 34
 }
