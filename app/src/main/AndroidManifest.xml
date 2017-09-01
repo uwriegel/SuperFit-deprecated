@@ -13,9 +13,10 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".Activities.MainActivity"
-                  android:label="super fit"
-                  android:configChanges="orientation"
-                  android:screenOrientation="portrait">
+            android:label="super fit"
+            android:launchMode="singleTop"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

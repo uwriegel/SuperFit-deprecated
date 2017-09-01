@@ -54,11 +54,10 @@ class MainActivity : AppCompatActivity() {
                 NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = Notification.Builder(this)
-                .setContentTitle("Notification Title")
-                .setContentText("Sample Notification Content")
+                .setContentTitle("Super fit")
+                .setContentText("Erfasst Fitness-Daten")
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background))
+                .setSmallIcon(R.drawable.ic_bike)
         val notification = builder.build()
         notification.flags = notification.flags or (Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
