@@ -1,5 +1,6 @@
 package com.gmail.uwriegel.superfit.Activities
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
@@ -16,9 +17,11 @@ import android.view.View
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import android.app.PendingIntent
 import android.graphics.BitmapFactory
+import android.view.WindowManager
 
 class MainActivity : AppCompatActivity() {
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,8 +56,9 @@ class MainActivity : AppCompatActivity() {
         val pendingIntent = PendingIntent.getActivity(this,
                 NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
+        @Suppress("DEPRECATION")
         val builder = Notification.Builder(this)
-                .setContentTitle("Super fit")
+                .setContentTitle("Super Fit")
                 .setContentText("Erfasst Fitness-Daten")
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_bike)
@@ -67,9 +71,11 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
-        this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag")
-        this.wakeLock?.acquire()
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        // TODO: dimmable sreen on
+        //val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        //this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag")
+        //this.wakeLock?.acquire()
     }
 
     override fun onPause() {

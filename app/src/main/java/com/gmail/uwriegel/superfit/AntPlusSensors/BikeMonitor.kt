@@ -15,32 +15,24 @@ import java.util.*
 
 /**
  * Created by urieg on 05.08.2017.
+ *
+ * Monitors several Bike-Sensors and subscribable properties
  */
-class BikeMonitor {
-    constructor(context: Context, onSpeed: (speed: Float)->Unit, onDistance: (distance: Float)->Unit, onCadence: (cadence: Float)->Unit,
-                onMaxSpeed: (maxSpeed: Float)->Unit, onTimeSpan: (timeSpan: Long, averageSpeed: Float)->Unit) {
-        this.onSpeed = onSpeed
-        this.onDistance = onDistance
-        this.onCadence = onCadence
-        this.onMaxSpeed = onMaxSpeed
-        this.onTimeSpan = onTimeSpan
-
-        initializeTimer {
-            onTimeSpan(it, (if (it > 0) currentDistance / it else 0f) * 3600f)
-        }
-
-        searchBike(context, {
-            deviceName = it.deviceDisplayName
-            deviceNumber = it.antDeviceNumber
-            subscribe(context)
-        })
-    }
+class BikeMonitor(context: Context,
+                  private val onSpeed: (speed: Float) -> Unit,
+                  private val onDistance: (distance: Float) -> Unit,
+                  private val onCadence: (cadence: Float) -> Unit,
+                  private val onMaxSpeed: (maxSpeed: Float) -> Unit,
+                  private val onTimeSpan: (timeSpan: Long, averageSpeed: Float) -> Unit) {
 
     private fun subscribe(context: Context) {
         bsdReleaseHandle = AntPlusBikeSpeedDistancePcc.requestAccess(context, deviceNumber, 0, true, { bikeController, resultCode, _ ->
-            when (resultCode) {
-                RequestAccessResult.SUCCESS -> subScribeToBikeSpeed(context, bikeController)
-            }
+            // TODO: pattern matching
+//            when (resultCode) {
+//                RequestAccessResult.SUCCESS -> subScribeToBikeSpeed(context, bikeController)
+//            }
+            if (resultCode == RequestAccessResult.SUCCESS)
+                subScribeToBikeSpeed(context, bikeController)
         }, {
         })
     }
@@ -91,10 +83,9 @@ class BikeMonitor {
         })
 
         if (bikeController.isSpeedAndCadenceCombinedSensor) {
-            bcReleaseHandle = AntPlusBikeCadencePcc.requestAccess(context, bikeController.antDeviceNumber, 0, true,{ bikeController, resultCode, _ ->
-                when (resultCode) {
-                    RequestAccessResult.SUCCESS -> subScribeToBikeCadence(bikeController)
-                }
+            bcReleaseHandle = AntPlusBikeCadencePcc.requestAccess(context, bikeController.antDeviceNumber, 0, true,{ bikeCadenceController, resultCode, _ ->
+                if (resultCode == RequestAccessResult.SUCCESS)
+                    subScribeToBikeCadence(bikeCadenceController)
             }, {
             })
         }
@@ -107,15 +98,10 @@ class BikeMonitor {
     }
 
     private fun destroy() {
-        bsdReleaseHandle?.close();
-        bcReleaseHandle?.close();
+        bsdReleaseHandle?.close()
+        bcReleaseHandle?.close()
     }
 
-    private val onSpeed: (speed: Float)->Unit
-    private val onDistance: (distance: Float)->Unit
-    private val onCadence: (cadence: Float)->Unit
-    private val onMaxSpeed: (maxSpeed: Float)->Unit
-    private val onTimeSpan: (timeSpan: Long, averageSpeed: Float)->Unit
     private val wheelCircumference = 2.096
 
     private var bsdReleaseHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
@@ -124,4 +110,15 @@ class BikeMonitor {
     private var deviceNumber = 0
     private var maxSpeed = 0.0f
     private var currentDistance = 0f
+
+    init {
+        initializeTimer {
+            onTimeSpan(it, (if (it > 0) currentDistance / it else 0f) * 3600f)
+        }
+        searchBike(context, {
+            deviceName = it.deviceDisplayName
+            deviceNumber = it.antDeviceNumber
+            subscribe(context)
+        })
+    }
 }

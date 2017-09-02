@@ -8,10 +8,14 @@ import java.util.*
 
 /**
  * Created by urieg on 05.08.2017.
+ *
+ * Several tools to search Ant+-Sensors
  */
-fun searchHeartRate(context: Context, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit) = searchDevice(context,"HEARTRATE", result)
+fun searchHeartRate(context: Context, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit)
+        = searchDevice(context,"HEARTRATE", result)
 
-fun searchBike(context: Context, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit) = searchDevice(context,"BIKE_SPDCAD", result)
+fun searchBike(context: Context, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit)
+        = searchDevice(context,"BIKE_SPDCAD", result)
 
 private fun searchDevice(context: Context, deviceType: String, result: (device: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult)->Unit)
 {
@@ -27,6 +31,9 @@ private fun searchDevice(context: Context, deviceType: String, result: (device: 
 
         override fun onDeviceFound(deviceFound: com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult?) {
             result(deviceFound!!)
+            // TODO: Suche beenden
+//            search?.close()
+//            search = null
         }
     })
 }
