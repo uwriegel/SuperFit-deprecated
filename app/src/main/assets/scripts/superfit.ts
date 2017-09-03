@@ -7,8 +7,9 @@ declare var Native: any
 class Module 
 {
     constructor() {
-        const startClicker = new ButtonClicker(this.start, evt => this.start, typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
-            () => this.display.classList.remove('hidden'))
+        const startClicker = new ButtonClicker(this.start, evt => this.start, 
+            typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
+            () => this.onStart())
 
         const stopClicker = new ButtonClicker(this.stop, evt => this.stop, null, () => {})
     }
@@ -63,6 +64,20 @@ class Module
             alert(test)
     }
 
+    onBackPressed() {
+        if (this.isDisplayOn) {
+            this.display.classList.add('hidden')
+            this.isDisplayOn = false    
+        }
+        else
+            Native.close()
+    }
+
+    private onStart() {
+        this.isDisplayOn = true
+        this.display.classList.remove('hidden')
+    }
+
     private pad(num: number, size: number) {
         let s = num + ""
         while (s.length < size)
@@ -91,6 +106,8 @@ class Module
         fadeScrollbars: true,
         shrinkScrollbars: 'clip'
     })
+
+    private isDisplayOn = false
 }
 
 const moduleInstance = new Module()

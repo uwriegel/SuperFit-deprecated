@@ -34,3 +34,7 @@ function setTimeSpan(dataString1: string, dataString2: string) {
 function setTest(test: string) {
     moduleInstance.onTest(test)
 }
+
+function onBackPressed() {
+    moduleInstance.onBackPressed()
+}

@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         webView.addJavascriptInterface(object {
             @JavascriptInterface
             fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+            @JavascriptInterface
+            fun close() = doAsync { uiThread { this@MainActivity.finish() } }
         }, "Native")
 
         heartRateMonitor = HeartRateMonitor(context = this) {
@@ -108,6 +110,8 @@ class MainActivity : AppCompatActivity() {
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
+
+    override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var heartRateMonitor: HeartRateMonitor? = null
