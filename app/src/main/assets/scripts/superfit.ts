@@ -81,8 +81,4 @@ class Module
     })
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    moduleInstance = new Module()
-})
-
-var moduleInstance: Module
+const moduleInstance = new Module()
