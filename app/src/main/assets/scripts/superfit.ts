@@ -1,33 +1,9 @@
-declare class IScroll{
+declare class IScroll {
     constructor(element: string, param: any)
 }
 
 class Module 
 {
-    constructor() {
-        document.addEventListener("DOMContentLoaded", () => {
-            this.theScroll = new IScroll('#wrapper',
-            {
-                scrollbars: true,
-                interactiveScrollbars: true,
-                click: true,
-                disablePointer: true,
-                disableTouch: false,
-                fadeScrollbars: true,
-                shrinkScrollbars: 'clip'
-            })
-
-            this.heartRateElement = document.getElementById('heartRate')
-            this.speedElement = document.getElementById('speed')
-            this.distanceElement = document.getElementById('distance')
-            this.cadenceElement = document.getElementById('cadence')
-            this.timeElement = document.getElementById('time')
-            this.avgSpeedElement = document.getElementById('avgSpeed')
-            this.maxSpeedElement = document.getElementById('maxSpeed')
-            this.testElement = document.getElementById('testSpan')
-        })
-    }
-
     onHeartRate(rate: number) {
         if (this.heartRateElement)
             this.heartRateElement.innerText = rate.toString()
@@ -55,9 +31,9 @@ class Module
 
     onTimeSpan(timeSpan: number) {
         if (this.timeElement) {
-            var hour = Math.floor(timeSpan / 3600)
+            const hour = Math.floor(timeSpan / 3600)
             timeSpan %= 3600
-            var minute = Math.floor(timeSpan / 60)
+            const minute = Math.floor(timeSpan / 60)
             timeSpan %= 60
             if (hour)
                 this.timeElement.innerText = `${hour}:${this.pad(minute, 2)}:${this.pad(timeSpan, 2)}`
@@ -78,22 +54,35 @@ class Module
             alert(test)
     }
 
-    private pad(num, size) {
-        var s = num + ""
+    private pad(num: number, size: number) {
+        let s = num + ""
         while (s.length < size)
             s = "0" + s
         return s
     }
 
-    private heartRateElement: HTMLElement
-    private speedElement: HTMLElement
-    private distanceElement: HTMLElement
-    private cadenceElement: HTMLElement
-    private timeElement: HTMLElement
-    private avgSpeedElement: HTMLElement
-    private maxSpeedElement: HTMLElement
-    private testElement: HTMLElement
-    private theScroll: any
+    private readonly heartRateElement = document.getElementById('heartRate')
+    private readonly speedElement = document.getElementById('speed')
+    private readonly distanceElement= document.getElementById('distance')
+    private readonly cadenceElement = document.getElementById('cadence')
+    private readonly timeElement = document.getElementById('time')
+    private readonly avgSpeedElement = document.getElementById('avgSpeed')
+    private readonly maxSpeedElement = document.getElementById('maxSpeed')
+    private readonly testElement = document.getElementById('testSpan')
+    private readonly theScroll = new IScroll('#wrapper',
+    {
+        scrollbars: true,
+        interactiveScrollbars: true,
+        click: true,
+        disablePointer: true,
+        disableTouch: false,
+        fadeScrollbars: true,
+        shrinkScrollbars: 'clip'
+    })
 }
 
-var moduleInstance = new Module()
+document.addEventListener("DOMContentLoaded", () => {
+    moduleInstance = new Module()
+})
+
+var moduleInstance: Module
