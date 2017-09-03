@@ -17,7 +17,11 @@ import android.view.View
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import android.app.PendingIntent
 import android.graphics.BitmapFactory
+import android.view.SoundEffectConstants
 import android.view.WindowManager
+import android.webkit.JavascriptInterface
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +38,10 @@ class MainActivity : AppCompatActivity() {
 
         webView.isHapticFeedbackEnabled = true
         webView.loadUrl("file:///android_asset/index.html")
+        webView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+        }, "Native")
 
         heartRateMonitor = HeartRateMonitor(context = this) {
             this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }

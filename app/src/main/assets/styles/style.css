@@ -4,16 +4,29 @@ body {
     margin: 0px;
 }
 
+.button {
+    margin: 30px;
+    background: lightblue;
+    color: white;
+    padding: 20px 50px;
+    text-align: center;
+}
+
 #wrapper {
     position: absolute;
     z-index: 100;
     top: 0px;
     bottom: 0px;
-    left: -0%;
+    left: 0%;
     width: 100%;
     overflow: hidden;
     background: black;
     color: white;
+    transition: left 0.4s;
+}
+
+#wrapper.hidden {
+    left: -100%;
 }
 
 #scroll-content {

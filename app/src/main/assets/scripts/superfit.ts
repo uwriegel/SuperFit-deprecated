@@ -2,8 +2,17 @@ declare class IScroll {
     constructor(element: string, param: any)
 }
 
+declare var Native: any
+
 class Module 
 {
+    constructor() {
+        const startClicker = new ButtonClicker(this.start, evt => this.start, typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
+            () => this.display.classList.remove('hidden'))
+
+        const stopClicker = new ButtonClicker(this.stop, evt => this.stop, null, () => {})
+    }
+
     onHeartRate(rate: number) {
         if (this.heartRateElement)
             this.heartRateElement.innerText = rate.toString()
@@ -69,6 +78,9 @@ class Module
     private readonly avgSpeedElement = document.getElementById('avgSpeed')
     private readonly maxSpeedElement = document.getElementById('maxSpeed')
     private readonly testElement = document.getElementById('testSpan')
+    private readonly start = document.getElementById('start')
+    private readonly stop = document.getElementById('stop')
+    private readonly display = document.getElementById('wrapper')
     private readonly theScroll = new IScroll('#wrapper',
     {
         scrollbars: true,
