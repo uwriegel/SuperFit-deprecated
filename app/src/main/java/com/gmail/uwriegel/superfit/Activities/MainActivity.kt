@@ -16,10 +16,10 @@ import android.os.PowerManager
 import android.view.View
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import android.app.PendingIntent
-import android.graphics.BitmapFactory
 import android.view.SoundEffectConstants
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
+import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -42,6 +42,19 @@ class MainActivity : AppCompatActivity() {
             @JavascriptInterface
             fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
             @JavascriptInterface
+            //fun start() = doAsync { uiThread { sensorService.start(this@MainActivity) } }
+            fun start() = doAsync { uiThread {
+                val startIntent = Intent(this@MainActivity, SensorService::class.java)
+                startIntent.action = "START_SERVICE"
+                startService(startIntent)
+            } }
+            @JavascriptInterface
+            fun stop() = doAsync { uiThread {
+                val startIntent = Intent(this@MainActivity, SensorService::class.java)
+                startIntent.action = "STOP_SERVICE"
+                startService(startIntent)
+            } }
+            @JavascriptInterface
             fun close() = doAsync { uiThread { this@MainActivity.finish() } }
         }, "Native")
 
@@ -60,22 +73,6 @@ class MainActivity : AppCompatActivity() {
         }, { timeSpan: Long, avgSpeed: Float -> this.runOnUiThread({
             webView.loadUrl("javascript:setTimeSpan('$timeSpan', '$avgSpeed')")})
         })
-
-        val intent = Intent(this, MainActivity::class.java)
-
-        val pendingIntent = PendingIntent.getActivity(this,
-                NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        @Suppress("DEPRECATION")
-        val builder = Notification.Builder(this)
-                .setContentTitle("Super Fit")
-                .setContentText("Erfasst Fitness-Daten")
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_bike)
-        val notification = builder.build()
-        notification.flags = notification.flags or (Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     override fun onResume() {
@@ -92,9 +89,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         this.wakeLock?.release()
-
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(NOTIFICATION_ID)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -116,6 +110,4 @@ class MainActivity : AppCompatActivity() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var heartRateMonitor: HeartRateMonitor? = null
     private var bikeMonitor: BikeMonitor? = null
-
-    private val NOTIFICATION_ID= 34
 }

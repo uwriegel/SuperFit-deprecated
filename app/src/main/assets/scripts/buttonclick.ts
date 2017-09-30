@@ -1,11 +1,10 @@
 
-class ButtonClicker
-{
+class ButtonClicker {
+
     constructor(clickableElement: HTMLElement, 
-        private getClicked: (evt: MouseEvent)=>HTMLElement, 
-        private feedback: ()=>void,
-        private onClick: ()=>void)
-    {
+        private getClicked: (evt: MouseEvent) => HTMLElement, 
+        private feedback: () => void,
+        private onClick: () => void) {
         clickableElement.onclick = evt => this.beginClick(evt)
     }
 
@@ -38,8 +37,10 @@ class ButtonClicker
         
         const drawCircle = (index: number) => {
             const alpha = index / 10
-            if (!actionExecuted && alpha > 0.6) 
+            if (!actionExecuted && alpha > 0.6) {
                 this.onClick()
+                actionExecuted = true
+            }
             if (alpha > 1) {
                 this.inClick = false
                 clickedElement.style.background = ""

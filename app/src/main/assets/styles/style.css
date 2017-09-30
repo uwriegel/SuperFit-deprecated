@@ -5,6 +5,7 @@ body {
 }
 
 .button {
+    border-radius: 10px;
     margin: 30px;
     background: lightblue;
     color: white;

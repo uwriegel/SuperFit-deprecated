@@ -4,14 +4,20 @@ declare class IScroll {
 
 declare var Native: any
 
-class Module 
-{
+class Module {
+
     constructor() {
+        const goClicker = new ButtonClicker(this.go, evt => this.go, 
+            typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
+            () => this.onGo())
+
         const startClicker = new ButtonClicker(this.start, evt => this.start, 
             typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
             () => this.onStart())
 
-        const stopClicker = new ButtonClicker(this.stop, evt => this.stop, null, () => {})
+        const stopClicker = new ButtonClicker(this.stop, evt => this.stop, 
+            typeof Native != undefined ? () => Native.doHapticFeedback() : null,
+            () => this.onStop())
     }
 
     onHeartRate(rate: number) {
@@ -73,9 +79,17 @@ class Module
             Native.close()
     }
 
-    private onStart() {
+    private onGo() {
         this.isDisplayOn = true
         this.display.classList.remove('hidden')
+    }
+
+    private onStart() {
+        Native.start()
+    }
+
+    private onStop() {
+        Native.stop()
     }
 
     private pad(num: number, size: number) {
@@ -93,6 +107,7 @@ class Module
     private readonly avgSpeedElement = document.getElementById('avgSpeed')
     private readonly maxSpeedElement = document.getElementById('maxSpeed')
     private readonly testElement = document.getElementById('testSpan')
+    private readonly go = document.getElementById('go')
     private readonly start = document.getElementById('start')
     private readonly stop = document.getElementById('stop')
     private readonly display = document.getElementById('wrapper')
