@@ -80,20 +80,28 @@ class Module {
     }
 
     private onGo() {
-
-
-        // const affe = new XMLHttpRequest()
-        // affe.onreadystatechange = () => {
-        //     if (affe.readyState == 4 && affe.status == 200) 
-        //         alert(affe.responseText)
-        // }
-        // affe.open("GET", "http://localhost:9865/", true)
-        
-        // affe.send()
-
-
         this.isDisplayOn = true
         this.display.classList.remove('hidden')
+
+        this.startRequesting()
+    }
+
+    private startRequesting() {
+        setInterval(() => this.request(), 500)
+    }
+
+    private request() {
+        const request = new XMLHttpRequest()
+        request.onreadystatechange = () => {
+            if (request.readyState == 4 && request.status == 200) {
+                const data = JSON.parse(request.responseText)
+                this.heartRateElement.innerText = data.heartRate.toString()
+            }
+
+                
+        }
+        request.open("GET", "http://localhost:9865/", true)
+        request.send()
     }
 
     private onStart() {

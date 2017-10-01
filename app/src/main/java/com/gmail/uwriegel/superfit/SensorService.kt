@@ -1,6 +1,6 @@
 package com.gmail.uwriegel.superfit
 
-import android.app.Notification
+
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -10,7 +10,9 @@ import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
 import com.gmail.uwriegel.superfit.Activities.MainActivity
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
-import kotlinx.android.synthetic.main.activity_main.*
+import java.net.InetAddress
+import java.net.ServerSocket
+import java.net.Socket
 
 private var isStarted = false
 private var close = {->}
@@ -72,4 +74,51 @@ class SensorService : Service() {
     }
 
     private val NOTIFICATION_ID= 34
+}
+
+
+fun runServer(): ()->Unit {
+    var server: ServerSocket? = null
+    Thread {
+        try {
+            server = ServerSocket (9865, 0, InetAddress.getLoopbackAddress())
+            while (true) {
+                val client = server!!.accept()
+                clientConnected(client)
+            }
+        }
+        catch (err: Exception) {
+            val affe = err.toString()
+            val mist = affe + "l"
+        }
+        return@Thread
+    }.start()
+    return { -> server?.close() }
+}
+
+fun clientConnected(client: Socket) {
+    Thread {
+        try {
+            val istream = client.getInputStream()
+            while (true) {
+                val buffer = ByteArray(2000)
+                val read = istream.read(buffer)
+
+                val responseBody =
+"""{
+    "heartRate": $heartRate
+}"""
+                val contentLength = responseBody.length
+                val response = "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\nContent-Length: $contentLength\r\n\r\n$responseBody"
+                val ostream = client.getOutputStream()
+                ostream.write(response.toByteArray())
+                ostream.flush()
+            }
+        }
+        catch (err: Exception) {
+            val affe = err.toString()
+            val mist = affe + "l"
+        }
+        return@Thread
+    }.start()
 }
