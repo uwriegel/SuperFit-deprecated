@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
 import com.gmail.uwriegel.superfit.Activities.MainActivity
+import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -17,7 +18,14 @@ import java.net.Socket
 private var isStarted = false
 private var close = {->}
 private var heartRateMonitor: HeartRateMonitor? = null
+private var bikeMonitor: BikeMonitor? = null
 private var heartRate = 0
+private var speed = 0F
+private var distance = 0F
+private var cadence = 0
+private var maxSpeed = 0F
+private var timeSpan = 0L
+private var averageSpeed = 0F
 
 class SensorService : Service() {
 
@@ -49,6 +57,19 @@ class SensorService : Service() {
                     close = runServer()
 
                     heartRateMonitor = HeartRateMonitor(context = this) { hr -> heartRate = hr }
+
+                    bikeMonitor = BikeMonitor(this, {
+                        sp -> speed = sp
+                    }, {
+                        d -> distance = d
+                    }, {
+                        c -> cadence = c
+                    }, {
+                        msp -> maxSpeed = msp
+                    }, {ts, asp ->
+                        timeSpan = ts
+                        averageSpeed = asp
+                    })
 
                     isStarted = true
                 }
@@ -106,7 +127,13 @@ fun clientConnected(client: Socket) {
 
                 val responseBody =
 """{
-    "heartRate": $heartRate
+    "heartRate": $heartRate,
+    "speed": $speed,
+    "distance": $distance,
+    "cadence": $cadence,
+    "maxSpeed": $maxSpeed,
+    "timeSpan": $timeSpan,
+    "averageSpeed": $averageSpeed
 }"""
                 val contentLength = responseBody.length
                 val response = "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\nContent-Length: $contentLength\r\n\r\n$responseBody"

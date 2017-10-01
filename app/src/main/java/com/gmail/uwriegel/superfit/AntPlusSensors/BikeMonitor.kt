@@ -21,7 +21,7 @@ import java.util.*
 class BikeMonitor(context: Context,
                   private val onSpeed: (speed: Float) -> Unit,
                   private val onDistance: (distance: Float) -> Unit,
-                  private val onCadence: (cadence: Float) -> Unit,
+                  private val onCadence: (cadence: Int) -> Unit,
                   private val onMaxSpeed: (maxSpeed: Float) -> Unit,
                   private val onTimeSpan: (timeSpan: Long, averageSpeed: Float) -> Unit) {
 
@@ -38,32 +38,26 @@ class BikeMonitor(context: Context,
     }
 
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {
-        var lastTimeStamp = 0L
-        var lastDistanceTimeStamp = 0L
         var speedIsNull = true
 
         bikeController.subscribeCalculatedSpeedEvent(object:
                 AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(BigDecimal(wheelCircumference)) {
             override fun onNewCalculatedSpeed(estTimestamp: Long, flags: EnumSet<EventFlag>?, calculatedSpeedInMs: BigDecimal?) {
                 if (calculatedSpeedInMs != null) {
-                    if (lastTimeStamp + 500 < estTimestamp ) {
-                        val calculatedSpeed = calculatedSpeedInMs.toFloat() * 3.6f
-                        onSpeed(calculatedSpeed)
+                    val calculatedSpeed = calculatedSpeedInMs.toFloat() * 3.6f
+                    onSpeed(calculatedSpeed)
 
-                        if (calculatedSpeed > maxSpeed) {
-                            maxSpeed = calculatedSpeed
-                            onMaxSpeed(maxSpeed)
-                        }
+                    if (calculatedSpeed > maxSpeed) {
+                        maxSpeed = calculatedSpeed
+                        onMaxSpeed(maxSpeed)
+                    }
 
-                        if (calculatedSpeed > 0.0f && speedIsNull) {
-                            speedIsNull = false
-                            continueTimer()
-                        } else if (calculatedSpeed == 0.0f && !speedIsNull) {
-                            speedIsNull = true
-                            pauseTimer()
-                        }
-
-                        lastTimeStamp = estTimestamp
+                    if (calculatedSpeed > 0.0f && speedIsNull) {
+                        speedIsNull = false
+                        continueTimer()
+                    } else if (calculatedSpeed == 0.0f && !speedIsNull) {
+                        speedIsNull = true
+                        pauseTimer()
                     }
                 }
             }
@@ -73,11 +67,8 @@ class BikeMonitor(context: Context,
         bikeController.subscribeCalculatedAccumulatedDistanceEvent(object: AntPlusBikeSpeedDistancePcc.CalculatedAccumulatedDistanceReceiver(BigDecimal(wheelCircumference)) {
             override fun onNewCalculatedAccumulatedDistance(estTimestamp: Long, flags: EnumSet<EventFlag>?, distance: BigDecimal?) {
                 if (distance != null) {
-                    if (lastDistanceTimeStamp + 1000 < estTimestamp ) {
-                        currentDistance = distance.divide(mToKm, 3, BigDecimal.ROUND_HALF_UP).toFloat()
-                        onDistance(currentDistance)
-                        lastDistanceTimeStamp = estTimestamp
-                    }
+                    currentDistance = distance.divide(mToKm, 3, BigDecimal.ROUND_HALF_UP).toFloat()
+                    onDistance(currentDistance)
                 }
             }
         })
@@ -93,7 +84,7 @@ class BikeMonitor(context: Context,
 
     private fun subScribeToBikeCadence(bikeController: AntPlusBikeCadencePcc) {
         bikeController.subscribeCalculatedCadenceEvent { _, _, calculatedCadence ->
-            onCadence((calculatedCadence.toFloat()))
+            onCadence((calculatedCadence.toInt()))
         }
     }
 

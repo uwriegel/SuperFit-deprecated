@@ -17,6 +17,7 @@ import android.view.SoundEffectConstants
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import com.gmail.uwriegel.superfit.AntPlusSensors.AlteHerzRate
+import com.gmail.uwriegel.superfit.AntPlusSensors.AltesBikeMonitor
 import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
         }
 
-        bikeMonitor = BikeMonitor(this, {
+        bikeMonitor = AltesBikeMonitor(this, {
             this.runOnUiThread { webView.loadUrl("javascript:setSpeed('$it')") }
         }, {
             this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
@@ -113,5 +114,5 @@ class MainActivity : AppCompatActivity() {
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var heartRateMonitor: AlteHerzRate? = null
-    private var bikeMonitor: BikeMonitor? = null
+    private var bikeMonitor: AltesBikeMonitor? = null
 }
