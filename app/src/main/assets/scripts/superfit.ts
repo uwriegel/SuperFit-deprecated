@@ -80,6 +80,18 @@ class Module {
     }
 
     private onGo() {
+
+
+        // const affe = new XMLHttpRequest()
+        // affe.onreadystatechange = () => {
+        //     if (affe.readyState == 4 && affe.status == 200) 
+        //         alert(affe.responseText)
+        // }
+        // affe.open("GET", "http://localhost:9865/", true)
+        
+        // affe.send()
+
+
         this.isDisplayOn = true
         this.display.classList.remove('hidden')
     }

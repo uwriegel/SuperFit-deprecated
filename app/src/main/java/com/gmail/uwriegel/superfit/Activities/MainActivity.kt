@@ -1,9 +1,6 @@
 package com.gmail.uwriegel.superfit.Activities
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +16,7 @@ import android.app.PendingIntent
 import android.view.SoundEffectConstants
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
+import com.gmail.uwriegel.superfit.AntPlusSensors.AlteHerzRate
 import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -32,8 +30,10 @@ class MainActivity : AppCompatActivity() {
 
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
-//        webSettings.domStorageEnabled = true
+        // webSettings.domStorageEnabled = true
         WebView.setWebContentsDebuggingEnabled(true)
+        // CORS allowed
+        webSettings.allowUniversalAccessFromFileURLs = true
         webView.webChromeClient = WebChromeClient()
 
         webView.isHapticFeedbackEnabled = true
@@ -58,21 +58,7 @@ class MainActivity : AppCompatActivity() {
             fun close() = doAsync { uiThread { this@MainActivity.finish() } }
         }, "Native")
 
-        heartRateMonitor = HeartRateMonitor(context = this) {
-            this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
-        }
-
-        bikeMonitor = BikeMonitor(this, {
-            this.runOnUiThread { webView.loadUrl("javascript:setSpeed('$it')") }
-        }, {
-            this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
-        }, {
-            this.runOnUiThread { webView.loadUrl("javascript:setCadence('$it')") }
-        }, {
-            this.runOnUiThread { webView.loadUrl("javascript:setMaxSpeed('$it')") }
-        }, { timeSpan: Long, avgSpeed: Float -> this.runOnUiThread({
-            webView.loadUrl("javascript:setTimeSpan('$timeSpan', '$avgSpeed')")})
-        })
+        // runSensors()
     }
 
     override fun onResume() {
@@ -107,7 +93,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
 
+    private fun runSensors() {
+        heartRateMonitor = AlteHerzRate(context = this) {
+            this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
+        }
+
+        bikeMonitor = BikeMonitor(this, {
+            this.runOnUiThread { webView.loadUrl("javascript:setSpeed('$it')") }
+        }, {
+            this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
+        }, {
+            this.runOnUiThread { webView.loadUrl("javascript:setCadence('$it')") }
+        }, {
+            this.runOnUiThread { webView.loadUrl("javascript:setMaxSpeed('$it')") }
+        }, { timeSpan: Long, avgSpeed: Float -> this.runOnUiThread({
+            webView.loadUrl("javascript:setTimeSpan('$timeSpan', '$avgSpeed')")})
+        })
+    }
+
     private var wakeLock: PowerManager.WakeLock? = null
-    private var heartRateMonitor: HeartRateMonitor? = null
+    private var heartRateMonitor: AlteHerzRate? = null
     private var bikeMonitor: BikeMonitor? = null
 }

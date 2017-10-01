@@ -20,15 +20,9 @@ class HeartRateMonitor(context: Context, val onNewHeartRate: (newHeartRate: Int)
     }
 
     fun subscribeToHeartRate(heartRateController: AntPlusHeartRatePcc) = heartRateController.subscribeHeartRateDataEvent { estTimestamp, _, computedHeartRate,_, _, _ ->
-        run {
-            if (lastTimeStamp + 1000 < estTimestamp ) {
-                this@HeartRateMonitor.onNewHeartRate(computedHeartRate)
-                lastTimeStamp = estTimestamp
-            }
-        }
+        run { this@HeartRateMonitor.onNewHeartRate(computedHeartRate) }
     }
 
-    var lastTimeStamp = 0L
     var deviceName = ""
     var deviceNumber = 0
 
