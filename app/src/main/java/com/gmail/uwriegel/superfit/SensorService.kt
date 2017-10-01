@@ -19,6 +19,8 @@ private var isStarted = false
 private var close = {->}
 private var heartRateMonitor: HeartRateMonitor? = null
 private var bikeMonitor: BikeMonitor? = null
+
+// Daten:
 private var heartRate = 0
 private var speed = 0F
 private var distance = 0F
@@ -29,10 +31,11 @@ private var averageSpeed = 0F
 
 class SensorService : Service() {
 
+    @Suppress("UNREACHABLE_CODE")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         return when(intent?.action) {
-            "START_SERVICE" -> {
+            START -> {
                 if (!isStarted) {
                     super.onStartCommand(intent, flags, startId)
 
@@ -49,7 +52,7 @@ class SensorService : Service() {
                             .setSmallIcon(R.drawable.ic_bike)
                             .setOngoing(true).build()
 
-                    startForeground(NOTIFICATION_ID, notification);
+                    startForeground(NOTIFICATION_ID, notification)
 
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.notify(NOTIFICATION_ID, notification)
@@ -76,7 +79,7 @@ class SensorService : Service() {
 
                 return START_STICKY
             }
-            "STOP_SERVICE" -> {
+            STOP -> {
                 if (isStarted) {
                     close()
                     stopForeground(true)
@@ -90,11 +93,15 @@ class SensorService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        // TODO: Return the communication channel to the service.
         return null
     }
 
-    private val NOTIFICATION_ID= 34
+    private val NOTIFICATION_ID = 34
+
+    companion object {
+        val START = "START"
+        val STOP = "STOP"
+    }
 }
 
 
@@ -108,10 +115,7 @@ fun runServer(): ()->Unit {
                 clientConnected(client)
             }
         }
-        catch (err: Exception) {
-            val affe = err.toString()
-            val mist = affe + "l"
-        }
+        catch (err: Exception) {}
         return@Thread
     }.start()
     return { -> server?.close() }
@@ -123,7 +127,7 @@ fun clientConnected(client: Socket) {
             val istream = client.getInputStream()
             while (true) {
                 val buffer = ByteArray(2000)
-                val read = istream.read(buffer)
+                istream.read(buffer)
 
                 val responseBody =
 """{
@@ -142,10 +146,7 @@ fun clientConnected(client: Socket) {
                 ostream.flush()
             }
         }
-        catch (err: Exception) {
-            val affe = err.toString()
-            val mist = affe + "l"
-        }
+        catch (err: Exception) {}
         return@Thread
     }.start()
 }

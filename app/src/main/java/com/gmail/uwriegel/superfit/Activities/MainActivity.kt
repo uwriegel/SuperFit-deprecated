@@ -6,18 +6,13 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.os.PowerManager
 import android.view.View
-import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
-import android.app.PendingIntent
 import android.view.SoundEffectConstants
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
-import com.gmail.uwriegel.superfit.AntPlusSensors.AlteHerzRate
-import com.gmail.uwriegel.superfit.AntPlusSensors.AltesBikeMonitor
 import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -43,23 +38,20 @@ class MainActivity : AppCompatActivity() {
             @JavascriptInterface
             fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
             @JavascriptInterface
-            //fun start() = doAsync { uiThread { sensorService.start(this@MainActivity) } }
             fun start() = doAsync { uiThread {
                 val startIntent = Intent(this@MainActivity, SensorService::class.java)
-                startIntent.action = "START_SERVICE"
+                startIntent.action = SensorService.START
                 startService(startIntent)
             } }
             @JavascriptInterface
             fun stop() = doAsync { uiThread {
                 val startIntent = Intent(this@MainActivity, SensorService::class.java)
-                startIntent.action = "STOP_SERVICE"
+                startIntent.action = SensorService.STOP
                 startService(startIntent)
             } }
             @JavascriptInterface
             fun close() = doAsync { uiThread { this@MainActivity.finish() } }
         }, "Native")
-
-        // runSensors()
     }
 
     override fun onResume() {
@@ -94,25 +86,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
 
-    private fun runSensors() {
-        heartRateMonitor = AlteHerzRate(context = this) {
-            this.runOnUiThread { webView.loadUrl("javascript:setHeartRate('$it')") }
-        }
-
-        bikeMonitor = AltesBikeMonitor(this, {
-            this.runOnUiThread { webView.loadUrl("javascript:setSpeed('$it')") }
-        }, {
-            this.runOnUiThread { webView.loadUrl("javascript:setDistance('$it')") }
-        }, {
-            this.runOnUiThread { webView.loadUrl("javascript:setCadence('$it')") }
-        }, {
-            this.runOnUiThread { webView.loadUrl("javascript:setMaxSpeed('$it')") }
-        }, { timeSpan: Long, avgSpeed: Float -> this.runOnUiThread({
-            webView.loadUrl("javascript:setTimeSpan('$timeSpan', '$avgSpeed')")})
-        })
-    }
-
     private var wakeLock: PowerManager.WakeLock? = null
-    private var heartRateMonitor: AlteHerzRate? = null
-    private var bikeMonitor: AltesBikeMonitor? = null
 }

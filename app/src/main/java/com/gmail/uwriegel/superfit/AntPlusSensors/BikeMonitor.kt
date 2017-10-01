@@ -88,6 +88,7 @@ class BikeMonitor(context: Context,
         }
     }
 
+    // TODO:
     private fun destroy() {
         bsdReleaseHandle?.close()
         bcReleaseHandle?.close()
