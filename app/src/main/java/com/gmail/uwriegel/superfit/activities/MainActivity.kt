@@ -18,6 +18,8 @@ import android.widget.Toast
 import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import android.util.Xml
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +29,20 @@ class MainActivity : AppCompatActivity() {
 
         if (checkPermissions())
             initialize()
+
+        // TODO: Create XmlFile on SD card with 3 TrackPoints
+        // TODO: Use extension functions for XmlSerializer
+
+        val filename = "/sdcard/oruxmaps/tracklogs/affe.xml"
+        val serializer = Xml.newSerializer()
+        val writer = FileOutputStream(filename)
+        serializer.setOutput(writer, "UTF-8")
+        serializer.startDocument("UTF-8", true)
+        serializer.startTag(null, "messages")
+        serializer.endTag(null, "messages")
+        serializer.endDocument()
+        serializer.flush()
+        writer.close()
     }
 
     override fun onResume() {
@@ -90,6 +106,8 @@ class MainActivity : AppCompatActivity() {
             permissionsList.add(Manifest.permission.ACCESS_FINE_LOCATION)
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+             permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
 
         val permissions = permissionsList.toTypedArray()
         if (permissions.count() > 0) {
