@@ -1,0 +1,19 @@
+package com.gmail.uwriegel.superfit.Tracking
+
+import java.util.*
+
+/**
+ * Created by urieg on 03.01.2018.
+ *
+ * TrackPoint Model
+ */
+data class TrackPoint(
+        val latitude: Float,
+        val longitude: Float,
+        val elevation: Float,
+        val time: Date,
+        val precision: Float,
+        val speed: Float,
+        val heartRate: Int) {
+}
+

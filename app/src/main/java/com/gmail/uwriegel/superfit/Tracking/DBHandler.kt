@@ -9,12 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper
  */
 
 // TODO: 1s oder 10
-class TrackingDBHandler(context: Context, dbName: String)
+class DBHandler(context: Context, dbName: String)
     : SQLiteOpenHelper(context, dbName, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE $TABLE_TRACK_POINT ($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$KEY_LATITUDE REAL, " +
-                "$KEY_LONGITUDE REAL, " +
                 "$KEY_LONGITUDE REAL, " +
                 "$KEY_ELEVATION REAL, " +
                 "$KEY_TIME INTEGER, " +
@@ -24,7 +23,8 @@ class TrackingDBHandler(context: Context, dbName: String)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        db.execSQL("DROP TABLE IF IT EXISTS $TABLE_TRACK_POINT")
+        onCreate(db)
     }
 
     companion object {
@@ -38,6 +38,5 @@ class TrackingDBHandler(context: Context, dbName: String)
         val KEY_PRECISION = "Precision"
         val KEY_SPEED = "Speed"
         val KEY_HEART_RATE = "HeartRate"
-        val COLUMN_ID = "_id"
     }
 }
