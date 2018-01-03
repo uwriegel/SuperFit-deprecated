@@ -8,10 +8,10 @@ import java.util.*
  * TrackPoint Model
  */
 data class TrackPoint(
-        val latitude: Float,
-        val longitude: Float,
-        val elevation: Float,
-        val time: Date,
+        val latitude: Double,
+        val longitude: Double,
+        val elevation: Double,
+        val time: Long,
         val precision: Float,
         val speed: Float,
         val heartRate: Int) {

@@ -11,6 +11,7 @@ import android.app.PendingIntent
 import com.gmail.uwriegel.superfit.activities.MainActivity
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
+import com.gmail.uwriegel.superfit.Tracking.LocationManager
 import com.gmail.uwriegel.superfit.Tracking.TrackPointsDataSource
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -42,6 +43,8 @@ class SensorService : Service() {
 
                     dataSource = TrackPointsDataSource(this)
                     dataSource.open()
+
+                    locationManager = LocationManager(this, dataSource)
 
                     val notificationIntent = Intent(this, MainActivity::class.java)
                     notificationIntent.action = "START"
@@ -87,6 +90,7 @@ class SensorService : Service() {
                 if (isStarted) {
                     close()
                     stopForeground(true)
+                    locationManager.stop()
                     dataSource.close()
                     isStarted = false
                     stopSelf()
@@ -103,6 +107,7 @@ class SensorService : Service() {
 
     private val NOTIFICATION_ID = 34
     private lateinit var dataSource: TrackPointsDataSource
+    private lateinit var locationManager: LocationManager
 
     companion object {
         val START = "START"
