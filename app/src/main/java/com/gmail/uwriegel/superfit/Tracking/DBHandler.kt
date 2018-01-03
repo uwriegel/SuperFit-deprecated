@@ -8,7 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper
  * Created by urieg on 02.01.2018.
  */
 
-// TODO: 1s oder 10
+// TODO: Log requestLocationUpdates (in debugger 2x)
+
 class DBHandler(context: Context, dbName: String)
     : SQLiteOpenHelper(context, dbName, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
