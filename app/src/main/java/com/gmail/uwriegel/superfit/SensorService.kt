@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
-import com.gmail.uwriegel.superfit.Activities.MainActivity
+import com.gmail.uwriegel.superfit.activities.MainActivity
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import java.net.InetAddress
