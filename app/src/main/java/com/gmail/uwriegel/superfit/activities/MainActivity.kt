@@ -20,6 +20,8 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import android.util.Xml
 import com.gmail.uwriegel.superfit.Tracking.TrackPoint
+import com.gmail.uwriegel.superfit.extensions.document
+import com.gmail.uwriegel.superfit.extensions.element
 import java.io.FileOutputStream
 import java.util.*
 
@@ -32,12 +34,12 @@ class MainActivity : AppCompatActivity() {
         if (checkPermissions())
             initialize()
 
-        // TODO: Create XmlFile on SD card with 3 TrackPoints
-        // TODO: Use extension functions for XmlSerializer
+
+
 
 
         val points = arrayOf(
-                TrackPoint(52.4, 5.4, 98.4, 123456, 23.5F, 23.5F, 60),
+                TrackPoint(52.4, 5.4, 98.4, Date().time, 23.5F, 23.5F, 60),
                 TrackPoint(52.6, 5.3, 96.2, 123457, 24.5F, 20.5F, 62),
                 TrackPoint(51.6, 5.9, 98.2, 123458, 20.5F, 25.5F, 68))
 
@@ -45,31 +47,26 @@ class MainActivity : AppCompatActivity() {
         val serializer = Xml.newSerializer()
         val writer = FileOutputStream(filename)
         serializer.setOutput(writer, "UTF-8")
-        serializer.startDocument("UTF-8", true)
-        serializer.startTag(null, "gpx")
-        serializer.attribute(null,"version", "1.1")
-        serializer.startTag(null, "trk")
-        serializer.startTag(null, "trkseg")
-        points.forEach {
-            serializer.startTag(null, "trkpt")
-            serializer.attribute(null, "lat", it.latitude.toString())
-            serializer.attribute(null, "lon", it.longitude.toString())
-            serializer.startTag(null, "ele")
-            serializer.text(it.elevation.toString())
-            serializer.endTag(null, "ele")
-            serializer.startTag(null, "time")
-            serializer.text(Date(it.time).toString())
-            serializer.endTag(null, "time")
-            serializer.startTag(null, "pdop")
-            serializer.text(it.precision.toString())
-            serializer.endTag(null, "pdop")
-            serializer.endTag(null, "trkpt")
-        }
-        serializer.endTag(null, "trkseg")
-        serializer.endTag(null, "trk")
-        serializer.endTag(null, "gpx")
-        serializer.endDocument()
-        serializer.flush()
+
+        serializer.document("UTF-8", true, {
+            element(null, "gpx", {
+                attribute(null,"version", "1.1")
+                element(null, "trk", {
+                    element(null, "trkseg", {
+                        points.forEach {
+                            element(null, "trkpt", {
+                                attribute(null,"lat", it.latitude.toString())
+                                attribute(null,"lon", it.longitude.toString())
+                                element(null, "ele", it.elevation.toString())
+                                element(null, "time", Date(it.time).toString())
+                                element(null, "pdop", it.precision.toString())
+                            })
+                        }
+                    })
+                })
+            })
+        })
+
         writer.close()
     }
 
