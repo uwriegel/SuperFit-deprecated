@@ -18,11 +18,6 @@ import android.widget.Toast
 import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import android.util.Xml
-import com.gmail.uwriegel.superfit.Tracking.TrackPoint
-import com.gmail.uwriegel.superfit.extensions.document
-import com.gmail.uwriegel.superfit.extensions.element
-import java.io.FileOutputStream
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -33,41 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         if (checkPermissions())
             initialize()
-
-
-
-
-
-        val points = arrayOf(
-                TrackPoint(52.4, 5.4, 98.4, Date().time, 23.5F, 23.5F, 60),
-                TrackPoint(52.6, 5.3, 96.2, 123457, 24.5F, 20.5F, 62),
-                TrackPoint(51.6, 5.9, 98.2, 123458, 20.5F, 25.5F, 68))
-
-        val filename = "/sdcard/oruxmaps/tracklogs/affe.xml"
-        val serializer = Xml.newSerializer()
-        val writer = FileOutputStream(filename)
-        serializer.setOutput(writer, "UTF-8")
-
-        serializer.document("UTF-8", true, {
-            element(null, "gpx", {
-                attribute(null,"version", "1.1")
-                element(null, "trk", {
-                    element(null, "trkseg", {
-                        points.forEach {
-                            element(null, "trkpt", {
-                                attribute(null,"lat", it.latitude.toString())
-                                attribute(null,"lon", it.longitude.toString())
-                                element(null, "ele", it.elevation.toString())
-                                element(null, "time", Date(it.time).toString())
-                                element(null, "pdop", it.precision.toString())
-                            })
-                        }
-                    })
-                })
-            })
-        })
-
-        writer.close()
     }
 
     override fun onResume() {

@@ -62,8 +62,8 @@ class TrackPointsDataSource {
         qb.tables = DBHandler.TABLE_TRACK_POINTS
 
         val cursor = qb.query(database,arrayOf(
-                DBHandler.KEY_LONGITUDE,
                 DBHandler.KEY_LATITUDE,
+                DBHandler.KEY_LONGITUDE,
                 DBHandler.KEY_ELEVATION,
                 DBHandler.KEY_TIME,
                 DBHandler.KEY_PRECISION,

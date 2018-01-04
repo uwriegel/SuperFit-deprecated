@@ -8,14 +8,20 @@ import android.content.Intent
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
+import android.util.Xml
 import com.gmail.uwriegel.superfit.activities.MainActivity
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.Tracking.LocationManager
 import com.gmail.uwriegel.superfit.Tracking.TrackPointsDataSource
+import com.gmail.uwriegel.superfit.activities.formatRfc3339
+import com.gmail.uwriegel.superfit.extensions.document
+import com.gmail.uwriegel.superfit.extensions.element
+import java.io.FileOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.*
 
 private var isStarted = false
 private var close = {->}
@@ -92,6 +98,7 @@ class SensorService : Service() {
                     close()
                     stopForeground(true)
                     locationManager.stop()
+                    exportToGpx()
                     dataSource.close()
                     isStarted = false
                     stopSelf()
@@ -104,6 +111,34 @@ class SensorService : Service() {
 
     override fun onBind(intent: Intent): IBinder? {
         return null
+    }
+
+    private fun exportToGpx() {
+        val filename = "/sdcard/oruxmaps/tracklogs/track.gpx"
+        val serializer = Xml.newSerializer()
+        val writer = FileOutputStream(filename)
+        serializer.setOutput(writer, "UTF-8")
+
+        serializer.document("UTF-8", true, {
+            element(null, "gpx", {
+                attribute(null,"version", "1.1")
+                element(null, "trk", {
+                    element(null, "trkseg", {
+                        dataSource.trackPoints.forEach {
+                            element(null, "trkpt", {
+                                attribute(null,"lat", it.latitude.toString())
+                                attribute(null,"lon", it.longitude.toString())
+                                element(null, "ele", it.elevation.toString())
+                                element(null, "time", formatRfc3339(Date(it.time)))
+                                element(null, "pdop", it.precision.toString())
+                            })
+                        }
+                    })
+                })
+            })
+        })
+
+        writer.close()
     }
 
     private val NOTIFICATION_ID = 34
