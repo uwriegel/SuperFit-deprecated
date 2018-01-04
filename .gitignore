@@ -1,0 +1,8 @@
+local.properties
+SuperFit.iml
+.gradle/
+.idea/
+build/
+gradle/
+*.js
+*.map
