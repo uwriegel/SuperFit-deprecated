@@ -7,6 +7,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import com.gmail.uwriegel.superfit.sendLocation
 
 /**
  * Created by urieg on 03.01.2018.
@@ -19,12 +20,15 @@ class LocationManager(context: Context, dataSource: TrackPointsDataSource) {
     }
 
     private val locationListener = object : LocationListener {
+
         override fun onLocationChanged(location: Location) {
+
             if (location.hasBearing()) {
                 val affe = 2
                 val aff = affe +8
             }
             dataSource.add(TrackPoint(location.latitude, location.longitude, location.altitude, location.time, location.accuracy, 0F, 0))
+            sendLocation()
     //        mapView.setCenter(LatLong(location.latitude, location.longitude))
         }
 

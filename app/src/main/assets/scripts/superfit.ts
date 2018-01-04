@@ -22,7 +22,7 @@ class Module {
 
     onBackPressed() {
         if (this.isDisplayOn) {
-            this.display.classList.add('hidden')
+            this.display.classList.add('offscreen')
             this.isDisplayOn = false    
         }
         else
@@ -31,7 +31,7 @@ class Module {
 
     private onGo() {
         this.isDisplayOn = true
-        this.display.classList.remove('hidden')
+        this.display.classList.remove('offscreen')
 
         this.startRequesting()
     }
@@ -62,6 +62,11 @@ class Module {
                     this.timeElement.innerText = `${this.pad(minute, 2)}:${this.pad(timeSpan, 2)}`
                 
                 this.avgSpeedElement.innerText = data.averageSpeed.toFixed(1)
+
+                if (data.gps) {
+                    const gps = document.getElementsByClassName("gps")[0]
+                    gps.classList.remove("hidden")
+                }
             }
         }
         request.open("GET", "http://localhost:9865/", true)

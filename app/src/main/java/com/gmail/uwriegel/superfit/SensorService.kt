@@ -30,6 +30,7 @@ private var cadence = 0
 private var maxSpeed = 0F
 private var timeSpan = 0L
 private var averageSpeed = 0F
+private var sendGpsActive = false
 
 class SensorService : Service() {
 
@@ -115,7 +116,6 @@ class SensorService : Service() {
     }
 }
 
-
 fun runServer(): ()->Unit {
     var server: ServerSocket? = null
     Thread {
@@ -133,6 +133,21 @@ fun runServer(): ()->Unit {
 }
 
 fun clientConnected(client: Socket) {
+
+    fun getSendGpsActive(): ()->String {
+        var gpsActiveSent = false
+
+        return {
+            if (sendGpsActive && !gpsActiveSent) {
+                gpsActiveSent = true
+                """"gps": true,
+    """
+            } else ""
+        }
+    }
+
+    val sendGpsActive = getSendGpsActive()
+
     Thread {
         try {
             val istream = client.getInputStream()
@@ -148,8 +163,9 @@ fun clientConnected(client: Socket) {
     "cadence": $cadence,
     "maxSpeed": $maxSpeed,
     "timeSpan": $timeSpan,
-    "averageSpeed": $averageSpeed
+    ${sendGpsActive()}"averageSpeed": $averageSpeed
 }"""
+
                 val contentLength = responseBody.length
                 val response = "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\nContent-Length: $contentLength\r\n\r\n$responseBody"
                 val ostream = client.getOutputStream()
@@ -161,3 +177,5 @@ fun clientConnected(client: Socket) {
         return@Thread
     }.start()
 }
+
+fun sendLocation() { sendGpsActive = true}

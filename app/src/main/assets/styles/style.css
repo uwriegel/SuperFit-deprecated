@@ -30,7 +30,7 @@ body {
     transition: left 0.4s;
 }
 
-#wrapper.hidden {
+#wrapper.offscreen {
     left: -100%;
 }
 
