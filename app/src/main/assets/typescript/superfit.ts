@@ -18,7 +18,10 @@ class Module {
         const stopClicker = new ButtonClicker(this.stop, evt => this.stop, 
             typeof Native != undefined ? () => Native.doHapticFeedback() : null,
             () => this.onStop())
-    }
+        const tracksClicker = new ButtonClicker(this.tracksButton, evt => this.tracksButton, 
+            typeof Native != undefined ? () => Native.doHapticFeedback() : null,
+            () => this.onTracks())
+        }
 
     onBackPressed() {
         if (this.isDisplayOn) {
@@ -26,6 +29,12 @@ class Module {
             this.display.classList.add('offscreen')
             
             this.isDisplayOn = false    
+        }
+        else if (this.isTracksOn) {
+            this.tracks.classList.remove('onscreen')
+            this.tracks.classList.add('offscreen')
+            
+            this.isTracksOn = false    
         }
         else
             Native.close()
@@ -84,6 +93,12 @@ class Module {
         Native.stop()
     }
 
+    private onTracks() {
+        this.isTracksOn = true
+        this.tracks.classList.add('onscreen')
+        this.tracks.classList.remove('offscreen')
+    }
+
     private pad(num: number, size: number) {
         let s = num + ""
         while (s.length < size)
@@ -102,10 +117,21 @@ class Module {
     private readonly go = document.getElementById('go')
     private readonly start = document.getElementById('start')
     private readonly stop = document.getElementById('stop')
-    private readonly display = document.getElementsByClassName('wrapper')[0]
+    private readonly tracksButton = document.getElementById('tracksButton')
+    private readonly display = document.getElementById('display')
+    private readonly tracks = document.getElementById('tracks')
 
-    private readonly theScroll = new IScroll('.wrapper',
-    {
+    private readonly displayScroll = new IScroll('#display', {
+        scrollbars: true,
+        interactiveScrollbars: true,
+        click: true,
+        disablePointer: true,
+        disableTouch: false,
+        fadeScrollbars: true,
+        shrinkScrollbars: 'clip'
+    })
+
+    private readonly tracksScroll = new IScroll('#tracks', {
         scrollbars: true,
         interactiveScrollbars: true,
         click: true,
@@ -116,6 +142,7 @@ class Module {
     })
 
     private isDisplayOn = false
+    private isTracksOn = false
 }
 
 const moduleInstance = new Module()

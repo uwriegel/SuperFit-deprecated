@@ -1,8 +1,12 @@
 .button {
     border-radius: 10px;
     margin: 30px;
-    background: lightblue;
-    color: white;
+    background: var(--button-background);
+    color: var(--button-color);
     padding: 20px 50px;
     text-align: center;
+}
+
+.dialog {
+    background: var(--dialog-background);
 }

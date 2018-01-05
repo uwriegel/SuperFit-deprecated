@@ -6,8 +6,6 @@
     bottom: 0px;
     width: 100%;
     overflow: hidden;
-    background: black;
-    color: white;
     transition: left 0.4s;
 }
 

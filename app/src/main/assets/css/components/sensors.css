@@ -27,3 +27,8 @@
     font-size: 100px;
     font-weight: 400;
 }
+
+.display {
+    background: var(--display-background);
+    color: var(--display-color);
+}
