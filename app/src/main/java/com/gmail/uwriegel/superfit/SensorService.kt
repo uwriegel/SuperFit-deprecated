@@ -113,6 +113,7 @@ class SensorService : Service() {
         return null
     }
 
+    // TODO: Namespace, Headersection
     private fun exportToGpx() {
         val filename = "/sdcard/oruxmaps/tracklogs/track.gpx"
         val serializer = Xml.newSerializer()

@@ -1,0 +1,18 @@
+body {
+    font-family: sans-serif;
+    padding: 0px;
+    margin: 0px;
+}
+
+.hidden {
+    display: none;
+}
+
+.onscreen {
+    left: 0%; 
+}
+
+.offscreen {
+    left: -100%;
+}
+

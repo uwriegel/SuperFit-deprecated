@@ -22,7 +22,9 @@ class Module {
 
     onBackPressed() {
         if (this.isDisplayOn) {
+            this.display.classList.remove('onscreen')
             this.display.classList.add('offscreen')
+            
             this.isDisplayOn = false    
         }
         else
@@ -31,6 +33,7 @@ class Module {
 
     private onGo() {
         this.isDisplayOn = true
+        this.display.classList.add('onscreen')
         this.display.classList.remove('offscreen')
 
         this.startRequesting()
@@ -99,9 +102,9 @@ class Module {
     private readonly go = document.getElementById('go')
     private readonly start = document.getElementById('start')
     private readonly stop = document.getElementById('stop')
-    private readonly display = document.getElementById('wrapper')
+    private readonly display = document.getElementsByClassName('wrapper')[0]
 
-    private readonly theScroll = new IScroll('#wrapper',
+    private readonly theScroll = new IScroll('.wrapper',
     {
         scrollbars: true,
         interactiveScrollbars: true,
