@@ -13,24 +13,7 @@ import kotlin.coroutines.experimental.buildSequence
  *
  * TrackPoints data access object
  */
-class TrackPointsDataSource {
-
-    constructor(context: Context) {
-        val dbNamePart = "tracking"
-
-        fun getNewDatabaseFile(index: Int): File {
-            val filename = "$dbNamePart-$index.db"
-            val dbFilePart = context.getDatabasePath(filename)
-            if (dbFilePart.exists())
-                return getNewDatabaseFile(index + 1)
-            else
-                return dbFilePart
-        }
-
-        val dbName = getNewDatabaseFile(0).name
-
-        dbHandler = DBHandler(context, dbName)
-    }
+class TrackPointsDataSource(context: Context) {
 
     fun open() {
         database = dbHandler.writableDatabase
@@ -38,15 +21,21 @@ class TrackPointsDataSource {
 
     fun close() {
 
-        trackPoints.forEach {
-            val affe = it
-            val test = affe.longitude
-        }
+//        trackPoints.forEach {
+//            val affe = it
+//            val test = affe.longitude
+//        }
 
         dbHandler.close()
     }
 
-    fun add(trackPoint: TrackPoint) {
+    fun getAccess(trackNumber: Int) : DBTrackAccess {
+        return DBTrackAccess({ trackPoint: TrackPoint -> add(trackPoint, trackNumber) },
+                { -> getTrackPoints(trackNumber) }
+        )
+    }
+
+    private fun add(trackPoint: TrackPoint, trackNumber: Int) {
         val values = ContentValues()
         values.put(DBHandler.KEY_LONGITUDE, trackPoint.longitude)
         values.put(DBHandler.KEY_LATITUDE, trackPoint.latitude)
@@ -57,37 +46,38 @@ class TrackPointsDataSource {
         database.insert(DBHandler.TABLE_TRACK_POINTS, null, values)
     }
 
-    val trackPoints = buildSequence {
-        val qb = SQLiteQueryBuilder()
-        qb.tables = DBHandler.TABLE_TRACK_POINTS
+    private fun getTrackPoints(trackNumber: Int): Sequence<TrackPoint> {
+        return buildSequence {
+            val qb = SQLiteQueryBuilder()
+            qb.tables = DBHandler.TABLE_TRACK_POINTS
 
-        val cursor = qb.query(database,arrayOf(
-                DBHandler.KEY_LATITUDE,
-                DBHandler.KEY_LONGITUDE,
-                DBHandler.KEY_ELEVATION,
-                DBHandler.KEY_TIME,
-                DBHandler.KEY_PRECISION,
-                DBHandler.KEY_SPEED),
-                null, null, null, null, null)
+            val cursor = qb.query(database, arrayOf(
+                    DBHandler.KEY_LATITUDE,
+                    DBHandler.KEY_LONGITUDE,
+                    DBHandler.KEY_ELEVATION,
+                    DBHandler.KEY_TIME,
+                    DBHandler.KEY_PRECISION,
+                    DBHandler.KEY_SPEED),
+                    null, null, null, null, null)
 
-        if (cursor.count > 0) {
-            cursor.moveToFirst()
-            while (true) {
-                yield(TrackPoint(
-                        cursor.getDouble(0),
-                        cursor.getDouble(1),
-                        cursor.getDouble(2),
-                        cursor.getLong(3),
-                        cursor.getFloat(4),
-                        cursor.getFloat(5), 0))
-                if (!cursor.moveToNext())
-                    break
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                while (true) {
+                    yield(TrackPoint(
+                            cursor.getDouble(0),
+                            cursor.getDouble(1),
+                            cursor.getDouble(2),
+                            cursor.getLong(3),
+                            cursor.getFloat(4),
+                            cursor.getFloat(5), 0))
+                    if (!cursor.moveToNext())
+                        break
+                }
             }
-
         }
     }
 
     private lateinit var database: SQLiteDatabase
-    private val dbHandler: DBHandler
+    private val dbHandler: DBHandler = DBHandler(context)
 }
 

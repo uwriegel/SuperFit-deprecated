@@ -12,6 +12,7 @@ import android.util.Xml
 import com.gmail.uwriegel.superfit.activities.MainActivity
 import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
+import com.gmail.uwriegel.superfit.Tracking.DBTrackAccess
 import com.gmail.uwriegel.superfit.Tracking.LocationManager
 import com.gmail.uwriegel.superfit.Tracking.TrackPointsDataSource
 import com.gmail.uwriegel.superfit.activities.formatRfc3339
@@ -51,7 +52,10 @@ class SensorService : Service() {
                     dataSource = TrackPointsDataSource(this)
                     dataSource.open()
 
-                    locationManager = LocationManager(this, dataSource)
+                    // TODO: create new record in "TRACKS", then take trackNumber
+                    trackAccess = dataSource.getAccess(23)
+
+                    locationManager = LocationManager(this, trackAccess)
 
                     val notificationIntent = Intent(this, MainActivity::class.java)
                     notificationIntent.action = "START"
@@ -115,6 +119,7 @@ class SensorService : Service() {
 
     // TODO: Namespace, Headersection
     private fun exportToGpx() {
+
         val filename = "/sdcard/oruxmaps/tracklogs/track.gpx"
         val serializer = Xml.newSerializer()
         val writer = FileOutputStream(filename)
@@ -125,7 +130,7 @@ class SensorService : Service() {
                 attribute(null,"version", "1.1")
                 element(null, "trk", {
                     element(null, "trkseg", {
-                        dataSource.trackPoints.forEach {
+                        trackAccess.trackPoints().forEach {
                             element(null, "trkpt", {
                                 attribute(null,"lat", it.latitude.toString())
                                 attribute(null,"lon", it.longitude.toString())
@@ -144,6 +149,7 @@ class SensorService : Service() {
 
     private val NOTIFICATION_ID = 34
     private lateinit var dataSource: TrackPointsDataSource
+    private lateinit var trackAccess: DBTrackAccess
     private lateinit var locationManager: LocationManager
 
     companion object {

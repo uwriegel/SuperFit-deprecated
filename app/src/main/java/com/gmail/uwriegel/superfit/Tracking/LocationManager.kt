@@ -13,7 +13,7 @@ import com.gmail.uwriegel.superfit.sendLocation
  * Created by urieg on 03.01.2018.
  */
 @SuppressLint("MissingPermission")
-class LocationManager(context: Context, dataSource: TrackPointsDataSource) {
+class LocationManager(context: Context, trackAccess: DBTrackAccess) {
 
     fun stop() {
         locationManager.removeUpdates(locationListener)
@@ -27,7 +27,7 @@ class LocationManager(context: Context, dataSource: TrackPointsDataSource) {
                 val affe = 2
                 val aff = affe +8
             }
-            dataSource.add(TrackPoint(location.latitude, location.longitude, location.altitude, location.time, location.accuracy, 0F, 0))
+            trackAccess.add(TrackPoint(location.latitude, location.longitude, location.altitude, location.time, location.accuracy, 0F, 0))
             sendLocation()
     //        mapView.setCenter(LatLong(location.latitude, location.longitude))
         }
