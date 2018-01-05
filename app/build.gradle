@@ -32,3 +32,8 @@ dependencies {
     implementation files('libs/fit_14.10.jar')
     compile "org.jetbrains.anko:anko-common:$anko_version"
 }
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
