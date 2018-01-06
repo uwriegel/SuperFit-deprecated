@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteQueryBuilder
+import java.util.*
 import kotlin.coroutines.experimental.buildSequence
 
 /**
@@ -28,16 +29,23 @@ class DataSource(context: Context) {
     }
 
     fun createTrack(longitude: Double, latitude: Double, time: Long) : TrackPointsDataSource {
-        // TODO: create new record in "TRACKS", then take trackNumber
-
-        val trackNumber = 456
+        val trackNumber = addTrack(longitude, latitude, time)
         return TrackPointsDataSource({ trackPoint: TrackPoint -> add(trackPoint, trackNumber) },
                 { -> getTrackPoints(trackNumber) }
         )
     }
 
-    private fun add(trackPoint: TrackPoint, trackNumber: Int) {
+    private fun addTrack(longitude: Double, latitude: Double, time: Long): Long {
         val values = ContentValues()
+        values.put(DBHandler.KEY_LONGITUDE, longitude)
+        values.put(DBHandler.KEY_LATITUDE, latitude)
+        values.put(DBHandler.KEY_TIME, time)
+        return database.insert(DBHandler.TABLE_TRACKS, null, values)
+    }
+
+    private fun add(trackPoint: TrackPoint, trackNumber: Long) {
+        val values = ContentValues()
+        values.put(DBHandler.KEY_TRACK_NR, trackNumber)
         values.put(DBHandler.KEY_LONGITUDE, trackPoint.longitude)
         values.put(DBHandler.KEY_LATITUDE, trackPoint.latitude)
         values.put(DBHandler.KEY_ELEVATION, trackPoint.elevation)
@@ -47,7 +55,8 @@ class DataSource(context: Context) {
         database.insert(DBHandler.TABLE_TRACK_POINTS, null, values)
     }
 
-    private fun getTrackPoints(trackNumber: Int): Sequence<TrackPoint> {
+    private fun getTrackPoints(trackNumber: Long): Sequence<TrackPoint> {
+        // TODO: Where tracknumber
         return buildSequence {
             val qb = SQLiteQueryBuilder()
             qb.tables = DBHandler.TABLE_TRACK_POINTS

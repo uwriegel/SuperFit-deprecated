@@ -7,6 +7,8 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import com.gmail.uwriegel.superfit.getHeartRate
+import com.gmail.uwriegel.superfit.getSpeed
 import com.gmail.uwriegel.superfit.sendLocation
 
 /**
@@ -30,7 +32,8 @@ class LocationManager(context: Context, dataSource: DataSource) {
                 val affe = 2
                 val aff = affe +8
             }
-            trackPoints!!.add(TrackPoint(location.latitude, location.longitude, location.altitude, location.time, location.accuracy, 0F, 0))
+            trackPoints!!.add(TrackPoint(location.latitude, location.longitude, location.altitude,
+                    location.time, location.accuracy, getSpeed(), getHeartRate()))
             sendLocation()
     //        mapView.setCenter(LatLong(location.latitude, location.longitude))
         }

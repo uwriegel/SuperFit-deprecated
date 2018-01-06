@@ -179,4 +179,7 @@ fun clientConnected(client: Socket) {
     }.start()
 }
 
+fun getHeartRate() = heartRate
+fun getSpeed() = speed
+
 fun sendLocation() { sendGpsActive = true}

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class DBHandler(context: Context)
     : SQLiteOpenHelper(context, dbName, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE $TABLE_TRACK_POINTS ($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        db.execSQL("CREATE TABLE $TABLE_TRACK_POINTS ($KEY_ID INTEGER PRIMARY KEY, " +
                 "$KEY_TRACK_NR INTEGER, " +
                 "$KEY_LATITUDE REAL, " +
                 "$KEY_LONGITUDE REAL, " +
@@ -20,10 +20,12 @@ class DBHandler(context: Context)
                 "$KEY_HEART_RATE INTEGER, " +
                 "$KEY_PRECISION REAL);")
 
-        db.execSQL("CREATE TABLE $TABLE_TRACKS ($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "$KEY_NAME TEXT, " +
+        db.execSQL("CREATE TABLE $TABLE_TRACKS ($KEY_ID INTEGER PRIMARY KEY, " +
                 "$KEY_LATITUDE REAL, " +
                 "$KEY_LONGITUDE REAL, " +
+                "$KEY_DISTANCE REAL, " +
+                "$KEY_DURATION TEXT, " +
+                "$KEY_AVERAGE_SPEED REAL, " +
                 "$KEY_TIME INTEGER);")
     }
 
@@ -38,8 +40,10 @@ class DBHandler(context: Context)
         val TABLE_TRACK_POINTS = "Trackpoints"
         val TABLE_TRACKS = "Tracks"
         val KEY_ID = "_id"
+        val KEY_DISTANCE = "Distance"
+        val KEY_DURATION = "Duration"
+        val KEY_AVERAGE_SPEED = "AverageSpeed"
         val KEY_TRACK_NR = "TrackNr"
-        val KEY_NAME = "Name"
         val KEY_LATITUDE = "Latitude"
         val KEY_LONGITUDE = "Longitude"
         val KEY_ELEVATION = "Elevation"
