@@ -1,5 +1,6 @@
-package com.gmail.uwriegel.superfit.activities
+package com.gmail.uwriegel.superfit
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import java.io.File
@@ -18,6 +19,7 @@ fun getExternalStorageDirectory(context: Context): String {
     return externalStorageFiles.map { getRootOfExternalStorage(it, context) }.first { !it.contains("emulated") }
 }
 
+@SuppressLint("SimpleDateFormat")
 fun formatRfc3339(date: Date) = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date)
 
 
