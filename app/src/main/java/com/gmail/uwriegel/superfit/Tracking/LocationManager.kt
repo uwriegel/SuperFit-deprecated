@@ -21,6 +21,8 @@ class LocationManager(context: Context, dataSource: DataSource) {
         locationManager.removeUpdates(locationListener)
     }
 
+    fun getTrackNumber(): Long? = trackPoints?.trackNumber
+
     private val locationListener = object : LocationListener {
 
         override fun onLocationChanged(location: Location) {

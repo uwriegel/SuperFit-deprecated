@@ -72,18 +72,15 @@ class SensorService : Service() {
 
                     heartRateMonitor = HeartRateMonitor(context = this) { hr -> heartRate = hr }
 
-                    bikeMonitor = BikeMonitor(this, {
-                        sp -> speed = sp
-                    }, {
-                        d -> distance = d
-                    }, {
-                        c -> cadence = c
-                    }, {
-                        msp -> maxSpeed = msp
-                    }, {ts, asp ->
-                        timeSpan = ts
-                        averageSpeed = asp
-                    })
+                    bikeMonitor = BikeMonitor(this,
+                            { sp -> speed = sp },
+                            { d -> distance = d },
+                            { c -> cadence = c },
+                            { msp -> maxSpeed = msp },
+                            { ts, asp ->
+                                timeSpan = ts
+                                averageSpeed = asp }
+                    )
 
                     isStarted = true
                 }
@@ -96,24 +93,27 @@ class SensorService : Service() {
                     stopForeground(true)
                     locationManager.stop()
                     //exportToGpx()
+
+                    val track = locationManager.getTrackNumber()
+                    if (track != null)
+                        dataSource.updateTrack(track, distance, timeSpan.toInt(), averageSpeed)
                     dataSource.close()
 
+                    val fileToCopy = getDatabasePath("Tracks.db")
+                    val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db")
 
-                    val fileToCopy = getDatabasePath("Tracks.db");
-                    val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db");
-
-                    val fis = FileInputStream(fileToCopy);
-                    val fos = FileOutputStream(destinationFile);
+                    val fis = FileInputStream(fileToCopy)
+                    val fos = FileOutputStream(destinationFile)
 
                     val b = ByteArray(1024)
-                    var noOfBytesRead = 0;
+                    var noOfBytesRead = 0
 
                     while(noOfBytesRead != -1) {
                         noOfBytesRead = fis.read(b)
                         if (noOfBytesRead != -1)
-                            fos.write(b, 0, noOfBytesRead);
+                            fos.write(b, 0, noOfBytesRead)
                     }
-                    fis.close();
+                    fis.close()
                     fos.close()
 
 

@@ -30,9 +30,19 @@ class DataSource(context: Context) {
 
     fun createTrack(longitude: Double, latitude: Double, time: Long) : TrackPointsDataSource {
         val trackNumber = addTrack(longitude, latitude, time)
-        return TrackPointsDataSource({ trackPoint: TrackPoint -> add(trackPoint, trackNumber) },
+        return TrackPointsDataSource(
+                trackNumber,
+                { trackPoint: TrackPoint -> add(trackPoint, trackNumber) },
                 { -> getTrackPoints(trackNumber) }
         )
+    }
+
+    fun updateTrack(trackNumber: Long, distance: Float, duration: Int, averageSpeed: Float) {
+        val values = ContentValues()
+        values.put(DBHandler.KEY_DISTANCE, distance)
+        values.put(DBHandler.KEY_DURATION, duration)
+        values.put(DBHandler.KEY_AVERAGE_SPEED, averageSpeed)
+        database.update(DBHandler.TABLE_TRACKS, values, "${DBHandler.KEY_ID} = $trackNumber", null)
     }
 
     private fun addTrack(longitude: Double, latitude: Double, time: Long): Long {

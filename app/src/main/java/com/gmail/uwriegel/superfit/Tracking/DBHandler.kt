@@ -24,7 +24,7 @@ class DBHandler(context: Context)
                 "$KEY_LATITUDE REAL, " +
                 "$KEY_LONGITUDE REAL, " +
                 "$KEY_DISTANCE REAL, " +
-                "$KEY_DURATION TEXT, " +
+                "$KEY_DURATION INTEGER, " +
                 "$KEY_AVERAGE_SPEED REAL, " +
                 "$KEY_TIME INTEGER);")
     }
