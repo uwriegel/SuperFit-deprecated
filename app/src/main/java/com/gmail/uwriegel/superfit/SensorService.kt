@@ -13,6 +13,9 @@ import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
 import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.Tracking.LocationManager
 import com.gmail.uwriegel.superfit.Tracking.DataSource
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
@@ -94,6 +97,28 @@ class SensorService : Service() {
                     locationManager.stop()
                     //exportToGpx()
                     dataSource.close()
+
+
+                    val fileToCopy = getDatabasePath("Tracks.db");
+                    val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db");
+
+                    val fis = FileInputStream(fileToCopy);
+                    val fos = FileOutputStream(destinationFile);
+
+                    val b = ByteArray(1024)
+                    var noOfBytesRead = 0;
+
+                    while(noOfBytesRead != -1) {
+                        noOfBytesRead = fis.read(b)
+                        if (noOfBytesRead != -1)
+                            fos.write(b, 0, noOfBytesRead);
+                    }
+                    fis.close();
+                    fos.close()
+
+
+
+
                     isStarted = false
                     stopSelf()
                 }

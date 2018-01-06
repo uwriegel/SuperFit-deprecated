@@ -39,3 +39,14 @@ import java.util.*
 
         writer.close()
     }
+//
+//<trkpt lat="54.8591470" lon="-1.5754310">
+//    <ele>29.2</ele>
+//    <time>2015-07-26T07:43:42Z</time>
+//    <extensions>
+//        <gpxtpx:TrackPointExtension>
+//            <gpxtpx:hr>92</gpxtpx:hr>
+//            <gpxtpx:cad>0</gpxtpx:cad>
+//        </gpxtpx:TrackPointExtension>
+//    </extensions>
+//</trkpt>

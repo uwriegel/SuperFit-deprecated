@@ -52,6 +52,7 @@ class DataSource(context: Context) {
         values.put(DBHandler.KEY_PRECISION, trackPoint.precision)
         values.put(DBHandler.KEY_TIME, trackPoint.time)
         values.put(DBHandler.KEY_SPEED, trackPoint.speed)
+        values.put(DBHandler.KEY_HEART_RATE, trackPoint.heartRate)
         database.insert(DBHandler.TABLE_TRACK_POINTS, null, values)
     }
 
