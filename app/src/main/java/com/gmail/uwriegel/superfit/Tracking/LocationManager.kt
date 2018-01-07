@@ -1,4 +1,4 @@
-package com.gmail.uwriegel.superfit.Tracking
+package com.gmail.uwriegel.superfit.tracking
 
 import android.annotation.SuppressLint
 import android.content.Context

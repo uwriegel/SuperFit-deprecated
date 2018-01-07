@@ -1,4 +1,4 @@
-package com.gmail.uwriegel.superfit.Tracking
+package com.gmail.uwriegel.superfit.tracking
 
 /**
  * Created by urieg on 05.01.2018.

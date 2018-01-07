@@ -62,23 +62,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
+    override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
 
-    override fun onBackPressed() {
-
-        data class Affe(
-                val latitude: Double,
-                val longitude: Double,
-                val arm: String) {
-        }
-
-        val affe = Affe(34.6, 2.99, "Ärmliche Öde")
-
-        val gson = Gson()
-        val json = gson.toJson(affe)
-
-        webView.evaluateJavascript("onJasonBekommen($json)", null)
-    }
+//    override fun onBackPressed() {
+//
+//        data class Affe(
+//                val latitude: Double,
+//                val longitude: Double,
+//                val arm: String) {
+//        }
+//
+//        val affe = Affe(34.6, 2.99, "Ärmliche Öde")
+//
+//        val gson = Gson()
+//        val json = gson.toJson(affe)
+//
+//        webView.evaluateJavascript("onJasonBekommen($json)", null)
+//    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -136,20 +136,29 @@ class MainActivity : AppCompatActivity() {
         webView.addJavascriptInterface(object {
             @JavascriptInterface
             fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+
             @JavascriptInterface
             fun start() = doAsync { uiThread {
                 val startIntent = Intent(this@MainActivity, SensorService::class.java)
                 startIntent.action = SensorService.START
                 startService(startIntent)
             } }
+
             @JavascriptInterface
             fun stop() = doAsync { uiThread {
                 val startIntent = Intent(this@MainActivity, SensorService::class.java)
                 startIntent.action = SensorService.STOP
                 startService(startIntent)
             } }
+
             @JavascriptInterface
             fun close() = doAsync { uiThread { this@MainActivity.finish() } }
+
+            @JavascriptInterface
+            fun getTracks() = doAsync { uiThread {
+                this@MainActivity.finish()
+            } }
+
         }, "Native")
     }
 

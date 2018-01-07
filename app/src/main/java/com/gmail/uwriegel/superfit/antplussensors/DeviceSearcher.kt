@@ -1,4 +1,4 @@
-package com.gmail.uwriegel.superfit.AntPlusSensors
+package com.gmail.uwriegel.superfit.antplussensors
 
 import android.content.Context
 import com.dsi.ant.plugins.antplus.pcc.MultiDeviceSearch

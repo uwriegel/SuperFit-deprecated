@@ -1,4 +1,4 @@
-package com.gmail.uwriegel.superfit.Tracking
+package com.gmail.uwriegel.superfit.tracking
 
 import android.util.Xml
 import com.gmail.uwriegel.superfit.formatRfc3339

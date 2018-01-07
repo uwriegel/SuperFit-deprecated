@@ -1,4 +1,4 @@
-package com.gmail.uwriegel.superfit.Tracking
+package com.gmail.uwriegel.superfit.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -6,11 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper
 
 /**
  * Created by urieg on 02.01.2018.
+ * SqLiteOpenHelper implementation
  */
 class DBHandler(context: Context)
     : SQLiteOpenHelper(context, dbName, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE $TABLE_TRACK_POINTS ($KEY_ID INTEGER PRIMARY KEY, " +
+        db.execSQL("CREATE TABLE $TABLE_TRACK_POINTS (${KEY_ID} INTEGER PRIMARY KEY, " +
                 "$KEY_TRACK_NR INTEGER, " +
                 "$KEY_LATITUDE REAL, " +
                 "$KEY_LONGITUDE REAL, " +
@@ -20,7 +21,7 @@ class DBHandler(context: Context)
                 "$KEY_HEART_RATE INTEGER, " +
                 "$KEY_PRECISION REAL);")
 
-        db.execSQL("CREATE TABLE $TABLE_TRACKS ($KEY_ID INTEGER PRIMARY KEY, " +
+        db.execSQL("CREATE TABLE $TABLE_TRACKS (${KEY_ID} INTEGER PRIMARY KEY, " +
                 "$KEY_LATITUDE REAL, " +
                 "$KEY_LONGITUDE REAL, " +
                 "$KEY_DISTANCE REAL, " +

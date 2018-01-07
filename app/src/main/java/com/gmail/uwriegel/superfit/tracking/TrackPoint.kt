@@ -1,6 +1,4 @@
-package com.gmail.uwriegel.superfit.Tracking
-
-import java.util.*
+package com.gmail.uwriegel.superfit.tracking
 
 /**
  * Created by urieg on 03.01.2018.

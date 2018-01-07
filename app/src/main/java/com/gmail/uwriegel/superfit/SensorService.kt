@@ -9,10 +9,10 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
 import com.gmail.uwriegel.superfit.activities.MainActivity
-import com.gmail.uwriegel.superfit.AntPlusSensors.BikeMonitor
-import com.gmail.uwriegel.superfit.AntPlusSensors.HeartRateMonitor
-import com.gmail.uwriegel.superfit.Tracking.LocationManager
-import com.gmail.uwriegel.superfit.Tracking.DataSource
+import com.gmail.uwriegel.superfit.antplussensors.BikeMonitor
+import com.gmail.uwriegel.superfit.antplussensors.HeartRateMonitor
+import com.gmail.uwriegel.superfit.tracking.DataSource
+import com.gmail.uwriegel.superfit.tracking.LocationManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -46,7 +46,6 @@ class SensorService : Service() {
                     super.onStartCommand(intent, flags, startId)
 
                     dataSource = DataSource(this)
-                    dataSource.open()
 
                     locationManager = LocationManager(this, dataSource)
 
@@ -97,7 +96,6 @@ class SensorService : Service() {
                     val track = locationManager.getTrackNumber()
                     if (track != null)
                         dataSource.updateTrack(track, distance, timeSpan.toInt(), averageSpeed)
-                    dataSource.close()
 
                     val fileToCopy = getDatabasePath("Tracks.db")
                     val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db")

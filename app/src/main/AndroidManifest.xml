@@ -34,6 +34,12 @@
             android:exported="true"
             android:permission=""
             tools:ignore="ExportedService" />
+
+        <provider
+            android:name=".provider.TracksContentProvider"
+            android:authorities="com.gmail.uwriegel.superfit.provider.tracks"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
