@@ -20,7 +20,7 @@ class Module {
             () => this.onStop())
         const tracksClicker = new ButtonClicker(this.tracksButton, evt => this.tracksButton, 
             typeof Native != undefined ? () => Native.doHapticFeedback() : null,
-            () => this.onTracks())
+            () => Native.getTracks())
         }
 
     onBackPressed() {

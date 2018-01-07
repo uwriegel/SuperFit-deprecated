@@ -43,6 +43,32 @@ class DataSource(context: Context) {
         contentResolver.update(TracksContentProvider.TRACKS_CONTENT_URI, values, "${DBHandler.KEY_ID}=$trackNumber", null)
     }
 
+    fun getTracks(): Sequence<Track> {
+        return buildSequence {
+            val cursor = contentResolver.query(TracksContentProvider.TRACKS_CONTENT_URI, arrayOf(
+                    DBHandler.KEY_LATITUDE,
+                    DBHandler.KEY_LONGITUDE,
+                    DBHandler.KEY_TIME,
+                    DBHandler.KEY_AVERAGE_SPEED,
+                    DBHandler.KEY_DISTANCE), null, null, null)
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                while (true) {
+                    yield(Track(
+                            cursor.getDouble(0),
+                            cursor.getDouble(1),
+                            cursor.getLong(2),
+                            cursor.getFloat(3),
+                            cursor.getFloat(4)))
+                    if (!cursor.moveToNext())
+                        break
+                }
+            }
+            cursor.close()
+        }
+    }
+
+
     private fun addTrack(longitude: Double, latitude: Double, time: Long): Long {
         val values = ContentValues()
         values.put(DBHandler.KEY_LONGITUDE, longitude)
@@ -52,14 +78,13 @@ class DataSource(context: Context) {
 
         val uri = contentResolver.insert(TracksContentProvider.TRACKS_CONTENT_URI, values)
         val cursor = contentResolver.query(uri, arrayOf(DBHandler.KEY_ID), null, null, null)
-        if (cursor.moveToFirst()) {
+        return if (cursor.count > 0) {
             cursor.moveToFirst()
             val id = cursor.getLong(0)
             cursor.close()
-            return id
+            id
         }
-        else
-            return -1
+        else -1
     }
 
     private fun add(trackPoint: TrackPoint, trackNumber: Long) {
@@ -77,8 +102,6 @@ class DataSource(context: Context) {
 
     private fun getTrackPoints(trackNumber: Long): Sequence<TrackPoint> {
 //        return buildSequence {
-//            val qb = SQLiteQueryBuilder()
-//            qb.tables = DBHandler.TABLE_TRACK_POINTS
 //
 //            val cursor = qb.query(database, arrayOf(
 //                    DBHandler.KEY_LATITUDE,
@@ -104,6 +127,7 @@ class DataSource(context: Context) {
 //                }
 //            }
 //        }
+        //cursor.close()
         throw NullPointerException()
     }
 

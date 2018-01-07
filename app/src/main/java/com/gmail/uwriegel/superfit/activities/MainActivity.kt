@@ -16,6 +16,8 @@ import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.widget.Toast
 import com.gmail.uwriegel.superfit.SensorService
+import com.gmail.uwriegel.superfit.tracking.DataSource
+import com.gmail.uwriegel.superfit.tracking.Track
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -63,22 +65,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
-
-//    override fun onBackPressed() {
-//
-//        data class Affe(
-//                val latitude: Double,
-//                val longitude: Double,
-//                val arm: String) {
-//        }
-//
-//        val affe = Affe(34.6, 2.99, "Ärmliche Öde")
-//
-//        val gson = Gson()
-//        val json = gson.toJson(affe)
-//
-//        webView.evaluateJavascript("onJasonBekommen($json)", null)
-//    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -156,7 +142,13 @@ class MainActivity : AppCompatActivity() {
 
             @JavascriptInterface
             fun getTracks() = doAsync { uiThread {
-                this@MainActivity.finish()
+                val dataSource = DataSource(this@MainActivity)
+                val tracks = dataSource.getTracks().toList()
+
+                val gson = Gson()
+                val json = gson.toJson(tracks)
+
+                webView.evaluateJavascript("onJasonBekommen($json)", null)
             } }
 
         }, "Native")

@@ -34,13 +34,12 @@ class TracksContentProvider : ContentProvider() {
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         val queryBuilder = SQLiteQueryBuilder()
+        queryBuilder.tables = DBHandler.TABLE_TRACKS
 
         val uriType = uriMatcher.match(uri)
         when(uriType) {
-            TRACKS_ID -> {
-                queryBuilder.tables = DBHandler.TABLE_TRACKS
-                queryBuilder.appendWhere("${DBHandler.KEY_ID}=${uri.lastPathSegment}")
-            }
+            TRACKS -> {}
+            TRACKS_ID -> queryBuilder.appendWhere("${DBHandler.KEY_ID}=${uri.lastPathSegment}")
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
 
