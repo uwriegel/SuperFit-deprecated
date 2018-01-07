@@ -19,6 +19,9 @@ import com.gmail.uwriegel.superfit.SensorService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
+import com.google.gson.Gson
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,7 +62,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
+//    override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
+
+    override fun onBackPressed() {
+
+        data class Affe(
+                val latitude: Double,
+                val longitude: Double,
+                val arm: String) {
+        }
+
+        val affe = Affe(34.6, 2.99, "Ärmliche Öde")
+
+        val gson = Gson()
+        val json = gson.toJson(affe)
+
+        webView.evaluateJavascript("onJasonBekommen($json)", null)
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {

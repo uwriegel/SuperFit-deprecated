@@ -31,6 +31,7 @@ dependencies {
     implementation files('libs/antpluginlib_3-5-0.jar')
     implementation files('libs/fit_14.10.jar')
     compile "org.jetbrains.anko:anko-common:$anko_version"
+    compile 'com.google.code.gson:gson:2.8.2'
 }
 kotlin {
     experimental {
