@@ -30,6 +30,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation files('libs/antpluginlib_3-5-0.jar')
     implementation files('libs/fit_14.10.jar')
+    implementation 'com.android.support:design:26.1.0'
     compile "org.jetbrains.anko:anko-common:$anko_version"
     compile 'com.google.code.gson:gson:2.8.2'
 }
