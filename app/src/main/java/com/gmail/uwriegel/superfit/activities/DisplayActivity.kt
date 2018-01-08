@@ -30,6 +30,8 @@ class DisplayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display)
 
+        displayWebView.setBackgroundColor(0)
+
         if (checkPermissions())
             initialize()
     }
@@ -63,7 +65,7 @@ class DisplayActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() = webView.loadUrl("javascript:onBackPressed()")
+    override fun onBackPressed() = displayWebView.loadUrl("javascript:onBackPressed()")
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -108,19 +110,19 @@ class DisplayActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initialize() {
-        val webSettings = webView.settings
+        val webSettings = displayWebView.settings
         webSettings.javaScriptEnabled = true
         // webSettings.domStorageEnabled = true
         WebView.setWebContentsDebuggingEnabled(true)
         // CORS allowed
         webSettings.allowUniversalAccessFromFileURLs = true
-        webView.webChromeClient = WebChromeClient()
+        displayWebView.webChromeClient = WebChromeClient()
 
-        webView.isHapticFeedbackEnabled = true
-        webView.loadUrl("file:///android_asset/index.html")
-        webView.addJavascriptInterface(object {
+        displayWebView.isHapticFeedbackEnabled = true
+        displayWebView.loadUrl("file:///android_asset/index.html")
+        displayWebView.addJavascriptInterface(object {
             @JavascriptInterface
-            fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+            fun doHapticFeedback() = doAsync { uiThread { displayWebView.playSoundEffect(SoundEffectConstants.CLICK) } }
 
             @JavascriptInterface
             fun start() = doAsync { uiThread {
@@ -147,7 +149,7 @@ class DisplayActivity : AppCompatActivity() {
                 val gson = Gson()
                 val json = gson.toJson(tracks)
 
-                webView.evaluateJavascript("onJasonBekommen($json)", null)
+                displayWebView.evaluateJavascript("onJasonBekommen($json)", null)
             } }
 
         }, "Native")

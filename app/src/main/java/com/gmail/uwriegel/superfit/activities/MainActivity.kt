@@ -1,5 +1,6 @@
 package com.gmail.uwriegel.superfit.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
@@ -12,11 +13,19 @@ import com.gmail.uwriegel.superfit.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import android.content.Intent
-
+import android.view.SoundEffectConstants
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import kotlinx.android.synthetic.main.activity_display.*
+import kotlinx.android.synthetic.main.content_main.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,6 +44,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        val webSettings = mainWebView.settings
+        webSettings.javaScriptEnabled = true
+        // webSettings.domStorageEnabled = true
+        WebView.setWebContentsDebuggingEnabled(true)
+        // CORS allowed
+        webSettings.allowUniversalAccessFromFileURLs = true
+        mainWebView.webChromeClient = WebChromeClient()
+
+        mainWebView.isHapticFeedbackEnabled = true
+        mainWebView.loadUrl("file:///android_asset/main.html")
+        mainWebView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun doHapticFeedback() = doAsync { uiThread { mainWebView.playSoundEffect(SoundEffectConstants.CLICK) } }
+        }, "Native")
     }
 
     override fun onBackPressed() {
