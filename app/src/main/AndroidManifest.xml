@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.DisplayActivity"
             android:configChanges="orientation"
             android:label="super fit"
             android:launchMode="singleTop"
@@ -39,7 +39,7 @@
             android:name=".provider.TracksContentProvider"
             android:authorities="com.gmail.uwriegel.superfit.provider.tracks"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.gmail.uwriegel.superfit.R
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_display.*
 import android.view.View
 import android.view.SoundEffectConstants
 import android.view.WindowManager
@@ -17,7 +17,6 @@ import android.webkit.JavascriptInterface
 import android.widget.Toast
 import com.gmail.uwriegel.superfit.SensorService
 import com.gmail.uwriegel.superfit.tracking.DataSource
-import com.gmail.uwriegel.superfit.tracking.Track
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -25,11 +24,11 @@ import com.google.gson.Gson
 
 
 
-class MainActivity : AppCompatActivity() {
+class DisplayActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_display)
 
         if (checkPermissions())
             initialize()
@@ -125,24 +124,24 @@ class MainActivity : AppCompatActivity() {
 
             @JavascriptInterface
             fun start() = doAsync { uiThread {
-                val startIntent = Intent(this@MainActivity, SensorService::class.java)
+                val startIntent = Intent(this@DisplayActivity, SensorService::class.java)
                 startIntent.action = SensorService.START
                 startService(startIntent)
             } }
 
             @JavascriptInterface
             fun stop() = doAsync { uiThread {
-                val startIntent = Intent(this@MainActivity, SensorService::class.java)
+                val startIntent = Intent(this@DisplayActivity, SensorService::class.java)
                 startIntent.action = SensorService.STOP
                 startService(startIntent)
             } }
 
             @JavascriptInterface
-            fun close() = doAsync { uiThread { this@MainActivity.finish() } }
+            fun close() = doAsync { uiThread { this@DisplayActivity.finish() } }
 
             @JavascriptInterface
             fun getTracks() = doAsync { uiThread {
-                val dataSource = DataSource(this@MainActivity)
+                val dataSource = DataSource(this@DisplayActivity)
                 val tracks = dataSource.getTracks().toList()
 
                 val gson = Gson()

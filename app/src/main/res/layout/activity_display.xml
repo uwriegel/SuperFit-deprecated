@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context="com.gmail.uwriegel.superfit.activities.MainActivity">
+    tools:context="com.gmail.uwriegel.superfit.activities.DisplayActivity">
 
     <WebView
         android:id="@+id/webView"
