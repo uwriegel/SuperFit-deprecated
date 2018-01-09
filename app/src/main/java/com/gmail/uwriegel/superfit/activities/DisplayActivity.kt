@@ -26,12 +26,36 @@ import com.google.gson.Gson
 
 class DisplayActivity : AppCompatActivity() {
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display)
 
         displayWebView.setBackgroundColor(0)
-        initialize()
+        val webSettings = displayWebView.settings
+        webSettings.javaScriptEnabled = true
+        // webSettings.domStorageEnabled = true
+        WebView.setWebContentsDebuggingEnabled(true)
+        // CORS allowed
+        webSettings.allowUniversalAccessFromFileURLs = true
+        displayWebView.webChromeClient = WebChromeClient()
+
+        displayWebView.isHapticFeedbackEnabled = true
+        displayWebView.loadUrl("file:///android_asset/display.html")
+        displayWebView.addJavascriptInterface(object {
+
+            @JavascriptInterface
+            fun getTracks() = doAsync { uiThread {
+                val dataSource = DataSource(this@DisplayActivity)
+                val tracks = dataSource.getTracks().toList()
+
+                val gson = Gson()
+                val json = gson.toJson(tracks)
+
+                displayWebView.evaluateJavascript("onJasonBekommen($json)", null)
+            } }
+
+        }, "Native")
     }
 
     override fun onResume() {
@@ -63,51 +87,7 @@ class DisplayActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() = displayWebView.loadUrl("javascript:onBackPressed()")
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun initialize() {
-        val webSettings = displayWebView.settings
-        webSettings.javaScriptEnabled = true
-        // webSettings.domStorageEnabled = true
-        WebView.setWebContentsDebuggingEnabled(true)
-        // CORS allowed
-        webSettings.allowUniversalAccessFromFileURLs = true
-        displayWebView.webChromeClient = WebChromeClient()
-
-        displayWebView.isHapticFeedbackEnabled = true
-        displayWebView.loadUrl("file:///android_asset/index.html")
-        displayWebView.addJavascriptInterface(object {
-            @JavascriptInterface
-            fun doHapticFeedback() = doAsync { uiThread { displayWebView.playSoundEffect(SoundEffectConstants.CLICK) } }
-
-            @JavascriptInterface
-            fun start() = doAsync { uiThread {
-            } }
-
-            @JavascriptInterface
-            fun stop() = doAsync { uiThread {
-                val startIntent = Intent(this@DisplayActivity, SensorService::class.java)
-                startIntent.action = SensorService.STOP
-                startService(startIntent)
-            } }
-
-            @JavascriptInterface
-            fun close() = doAsync { uiThread { this@DisplayActivity.finish() } }
-
-            @JavascriptInterface
-            fun getTracks() = doAsync { uiThread {
-                val dataSource = DataSource(this@DisplayActivity)
-                val tracks = dataSource.getTracks().toList()
-
-                val gson = Gson()
-                val json = gson.toJson(tracks)
-
-                displayWebView.evaluateJavascript("onJasonBekommen($json)", null)
-            } }
-
-        }, "Native")
-    }
+//    override fun onBackPressed() = displayWebView.loadUrl("javascript:onBackPressed()")
 
     //private var wakeLock: PowerManager.WakeLock? = null
 }

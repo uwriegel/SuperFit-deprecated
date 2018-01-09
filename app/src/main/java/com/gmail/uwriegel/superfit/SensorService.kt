@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
-import com.gmail.uwriegel.superfit.activities.DisplayActivity
+import com.gmail.uwriegel.superfit.activities.MainActivity
 import com.gmail.uwriegel.superfit.antplussensors.BikeMonitor
 import com.gmail.uwriegel.superfit.antplussensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.tracking.DataSource
@@ -49,7 +49,7 @@ class SensorService : Service() {
 
                     locationManager = LocationManager(this, dataSource)
 
-                    val notificationIntent = Intent(this, DisplayActivity::class.java)
+                    val notificationIntent = Intent(this, MainActivity::class.java)
                     notificationIntent.action = "START"
                     notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
