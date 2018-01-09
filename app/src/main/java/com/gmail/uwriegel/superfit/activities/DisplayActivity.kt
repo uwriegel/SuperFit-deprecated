@@ -83,9 +83,6 @@ class DisplayActivity : AppCompatActivity() {
 
             @JavascriptInterface
             fun start() = doAsync { uiThread {
-                val startIntent = Intent(this@DisplayActivity, SensorService::class.java)
-                startIntent.action = SensorService.START
-                startService(startIntent)
             } }
 
             @JavascriptInterface

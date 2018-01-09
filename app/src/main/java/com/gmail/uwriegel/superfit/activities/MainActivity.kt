@@ -19,11 +19,15 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Toast
+import com.gmail.uwriegel.superfit.SensorService
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.ArrayList
 import java.util.HashMap
+import android.content.Context.ACTIVITY_SERVICE
+import android.app.ActivityManager
+import android.content.Context
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -57,13 +61,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             @JavascriptInterface
             fun start() = doAsync { uiThread {
-                val intent = Intent(this@MainActivity, DisplayActivity::class.java)
-                startActivity(intent)
+                val startIntent = Intent(this@MainActivity, SensorService::class.java)
+                startIntent.action = SensorService.START
+                startService(startIntent)
+
+                display()
             } }
         }, "Native")
 
-        if (!checkPermissions())
-            return
+        if (checkPermissions())
+            initialize()
     }
 
     override fun onBackPressed() {
@@ -130,15 +137,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Check for ACCESS_FINE_LOCATION
                 if (perms[Manifest.permission.ACCESS_FINE_LOCATION] == PackageManager.PERMISSION_GRANTED
                         && perms[Manifest.permission.WRITE_EXTERNAL_STORAGE] == PackageManager.PERMISSION_GRANTED)
-                // All Permissions Granted
-                {}
+                    // All Permissions Granted
+                    initialize()
                 else
-                // Permission Denied
+                    // Permission Denied
                     Toast.makeText(this, "Some Permission is Denied", Toast.LENGTH_SHORT).show()
             }
             else ->
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun initialize() {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val started = manager.getRunningServices(Integer.MAX_VALUE).firstOrNull({ SensorService.javaClass.name.contains(it.service.className) } )!= null
+        if (started)
+            display()
+    }
+
+    private fun display() {
+        val intent = Intent(this, DisplayActivity::class.java)
+        startActivity(intent)
     }
 
     private fun checkPermissions(): Boolean {
