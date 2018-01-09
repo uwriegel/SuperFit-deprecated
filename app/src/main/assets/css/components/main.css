@@ -1,47 +1,7 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* .starter {
-    background: var(--button-background);
-    width: 200px;
-    height: 200px;
-    text-align: center;
-    border-radius: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */
-
-#start {
+.starter {
     font-size: 20px;
 }
-
-
-
-
 
 .button {
     border-radius: 10px;

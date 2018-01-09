@@ -31,9 +31,7 @@ class DisplayActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display)
 
         displayWebView.setBackgroundColor(0)
-
-        if (checkPermissions())
-            initialize()
+        initialize()
     }
 
     override fun onResume() {
@@ -66,47 +64,6 @@ class DisplayActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() = displayWebView.loadUrl("javascript:onBackPressed()")
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
-                val perms = HashMap<String, Int>()
-                // Initial
-                perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED)
-                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED)
-                // Fill with results
-                for ((index, value) in permissions.withIndex())
-                    perms.put(value, grantResults[index])
-                // Check for ACCESS_FINE_LOCATION
-                if (perms[Manifest.permission.ACCESS_FINE_LOCATION] == PackageManager.PERMISSION_GRANTED
-                        && perms[Manifest.permission.WRITE_EXTERNAL_STORAGE] == PackageManager.PERMISSION_GRANTED)
-                    // All Permissions Granted
-                    initialize()
-                else
-                    // Permission Denied
-                    Toast.makeText(this, "Some Permission is Denied", Toast.LENGTH_SHORT).show()
-            }
-            else ->
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-    }
-
-     private fun checkPermissions(): Boolean {
-        val permissionsList = ArrayList<String>()
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            permissionsList.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-             permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-
-        val permissions = permissionsList.toTypedArray()
-        if (permissions.count() > 0) {
-            requestPermissions(permissions, REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS)
-            return false
-        }
-        return true
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initialize() {
@@ -156,8 +113,4 @@ class DisplayActivity : AppCompatActivity() {
     }
 
     //private var wakeLock: PowerManager.WakeLock? = null
-
-    companion object {
-        val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
-    }
 }
