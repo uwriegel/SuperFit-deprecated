@@ -28,6 +28,7 @@ import java.util.HashMap
 import android.content.Context.ACTIVITY_SERVICE
 import android.app.ActivityManager
 import android.content.Context
+import kotlinx.android.synthetic.main.activity_display.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -54,7 +55,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mainWebView.webChromeClient = WebChromeClient()
 
         mainWebView.isHapticFeedbackEnabled = true
-        mainWebView.loadUrl("file:///android_asset/main.html")
         mainWebView.addJavascriptInterface(object {
             @JavascriptInterface
             fun doHapticFeedback() = doAsync { uiThread { mainWebView.playSoundEffect(SoundEffectConstants.CLICK) } }
@@ -66,6 +66,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startService(startIntent)
 
                 display()
+            } }
+
+            @JavascriptInterface
+            fun stop() = doAsync { uiThread {
+                val startIntent = Intent(this@MainActivity, SensorService::class.java)
+                startIntent.action = SensorService.STOP
+                startService(startIntent)
             } }
         }, "Native")
 
@@ -154,9 +161,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val started = manager.getRunningServices(Integer.MAX_VALUE).firstOrNull({ SensorService.javaClass.name.contains(it.service.className) } )!= null
         if (started)
             display()
+
+        mainWebView.loadUrl("file:///android_asset/main.html#${started}")
     }
 
     private fun display() {
+        mainWebView.evaluateJavascript("displayStop()", null)
+
         val intent = Intent(this, DisplayActivity::class.java)
         startActivity(intent)
     }
