@@ -3,7 +3,6 @@ package com.gmail.uwriegel.superfit.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -19,16 +18,14 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Toast
-import com.gmail.uwriegel.superfit.SensorService
+import com.gmail.uwriegel.superfit.sensor.SensorService
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.ArrayList
 import java.util.HashMap
-import android.content.Context.ACTIVITY_SERVICE
 import android.app.ActivityManager
 import android.content.Context
-import kotlinx.android.synthetic.main.activity_display.*
 
 
 class MainActivity : AppCompatActivity() {

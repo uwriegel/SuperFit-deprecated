@@ -7,9 +7,8 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import com.gmail.uwriegel.superfit.getHeartRate
-import com.gmail.uwriegel.superfit.getSpeed
-import com.gmail.uwriegel.superfit.sendLocation
+import com.gmail.uwriegel.superfit.sensor.data
+import com.gmail.uwriegel.superfit.sensor.gpsActive
 
 /**
  * Created by urieg on 03.01.2018.
@@ -19,6 +18,7 @@ class LocationManager(context: Context, dataSource: DataSource) {
 
     fun stop() {
         locationManager.removeUpdates(locationListener)
+        gpsActive = false
     }
 
     fun getTrackNumber(): Long? = trackPoints?.trackNumber
@@ -26,6 +26,8 @@ class LocationManager(context: Context, dataSource: DataSource) {
     private val locationListener = object : LocationListener {
 
         override fun onLocationChanged(location: Location) {
+
+            gpsActive = true
 
             if (trackPoints == null)
                 trackPoints = dataSource.createTrack(location.longitude, location.latitude, location.time)
@@ -35,8 +37,7 @@ class LocationManager(context: Context, dataSource: DataSource) {
                 val aff = affe +8
             }
             trackPoints!!.add(TrackPoint(location.latitude, location.longitude, location.altitude,
-                    location.time, location.accuracy, getSpeed(), getHeartRate()))
-            sendLocation()
+                    location.time, location.accuracy, data.speed, data.heartRate))
     //        mapView.setCenter(LatLong(location.latitude, location.longitude))
         }
 
