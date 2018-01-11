@@ -1,0 +1,86 @@
+body {
+    overflow-y: auto;
+}
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Material Icons'), local('MaterialIcons-Regular'), url(../fonts/MaterialIcons-Regular.woff2) format('woff');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    padding-right: 10px;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+}
+
+#marker {
+    position: absolute;
+    right: 25px;
+    top: 120px;
+    transform: rotate(45deg);
+    transition: transform 1s;
+    font-size: x-small;
+    /*transform-origin: 6px 12px;*/
+}
+
+#marker.opened {
+    transform: rotate(225deg);
+}
+
+#drawerHeader {
+    padding-left: 15px;
+    color: white;
+    font-size: small;
+    background: linear-gradient(135deg, #00695C, #009688, #4DB6AC);
+}
+
+#icon {
+    width: 64px;
+    margin-top: 40px;
+    border-radius: 50%;
+}
+
+#drawerHeader h1 {
+    font-size: larger;
+    font-weight: 400;
+    -webkit-margin-before: 1.1em;
+    -webkit-margin-after: 0.3em;
+}
+
+#drawerHeader div {
+    padding-bottom: 30px;
+    opacity: 0.7
+}
+
+h2 {
+    font-weight: normal;
+    margin-left: 15px;
+    font-size: larger;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+}
+
+ul {
+    padding-bottom: 10px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: lightgray;
+    list-style-position: inside;
+    -webkit-padding-start: 0px;
+    list-style-type: none;
+}

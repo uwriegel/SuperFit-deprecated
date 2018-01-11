@@ -1,6 +1,3 @@
-declare class IScroll {
-    constructor(element: string, param: any)
-}
 
 declare class SensorData {
     heartRate: number
@@ -11,8 +8,6 @@ declare class SensorData {
     timeSpan: number
     averageSpeed: number
 }
-
-declare var Native: any
 
 function onSensorData(data: SensorData) {
     heartRateElement.innerText = data.heartRate.toString()

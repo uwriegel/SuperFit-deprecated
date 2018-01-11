@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        initializeNavigationDrawer()
+
         val webSettings = mainWebView.settings
         webSettings.javaScriptEnabled = true
         // webSettings.domStorageEnabled = true
@@ -154,6 +156,19 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         return true
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun initializeNavigationDrawer() {
+        val navigationHeader = nav_view.getHeaderView(0)
+        val navWebView = navigationHeader.findViewById<WebView>(R.id.navView)
+        val navViewSettings = navWebView.settings
+        navViewSettings.javaScriptEnabled = true
+        navWebView.webChromeClient = WebChromeClient()
+//        navWebView.addJavascriptInterface(object {
+//        }, "Native")
+        navWebView.isHapticFeedbackEnabled = true
+        navWebView.loadUrl("file:///android_asset/navigationbar.html")
     }
 
     companion object {
