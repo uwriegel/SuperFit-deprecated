@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 val startIntent = Intent(this@MainActivity, SensorService::class.java)
                 startIntent.action = SensorService.STOP
                 startService(startIntent)
+                finish()
             } }
         }, "Native")
 
