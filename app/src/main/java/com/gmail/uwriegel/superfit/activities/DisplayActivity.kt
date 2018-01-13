@@ -39,20 +39,6 @@ class DisplayActivity : AppCompatActivity() {
 
         displayWebView.isHapticFeedbackEnabled = true
         displayWebView.loadUrl("file:///android_asset/display.html")
-        displayWebView.addJavascriptInterface(object {
-
-            @JavascriptInterface
-            fun getTracks() = doAsync { uiThread {
-                val dataSource = DataSource(this@DisplayActivity)
-                val tracks = dataSource.getTracks().toList()
-
-                val gson = Gson()
-                val json = gson.toJson(tracks)
-
-                displayWebView.evaluateJavascript("onJasonBekommen($json)", null)
-            } }
-
-        }, "Native")
     }
 
     override fun onResume() {

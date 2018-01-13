@@ -7,7 +7,13 @@ tracks.onclick = () => {
     Native.doHapticFeedback()
 
     if (tracksMarker.classList.contains(OPENED))
-        tracksMarker.classList.remove(OPENED)
-    else
+        tracksMarker.classList.remove(OPENED) 
+    else {
         tracksMarker.classList.add(OPENED)
+        Native.fillTracks()
+    }
+}
+
+function onTracks(data: any) {
+    console.log(data)
 }

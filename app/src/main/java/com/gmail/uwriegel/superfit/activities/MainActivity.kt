@@ -26,6 +26,9 @@ import java.util.ArrayList
 import java.util.HashMap
 import android.app.ActivityManager
 import android.content.Context
+import com.gmail.uwriegel.superfit.tracking.DataSource
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_display.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -169,6 +172,18 @@ class MainActivity : AppCompatActivity() {
         navWebView.addJavascriptInterface(object {
             @JavascriptInterface
             fun doHapticFeedback() = doAsync { uiThread { mainWebView.playSoundEffect(SoundEffectConstants.CLICK) } }
+
+            @JavascriptInterface
+            fun fillTracks() = doAsync { uiThread {
+                val dataSource = DataSource(this@MainActivity)
+                val tracks = dataSource.getTracks().toList()
+
+                val gson = Gson()
+                val json = gson.toJson(tracks)
+
+                navWebView.evaluateJavascript("onTracks($json)", null)
+            } }
+
         }, "Native")
         navWebView.isHapticFeedbackEnabled = true
         navWebView.loadUrl("file:///android_asset/navigationbar.html")
