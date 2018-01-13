@@ -79,13 +79,27 @@ h2 {
 
 ul {
     padding-bottom: 10px;
-    border-bottom-style: solid;
+    /* border-bottom-style: solid;
     border-bottom-width: 1px;
-    border-bottom-color: lightgray;
+    border-bottom-color: lightgray; */
     list-style-position: inside;
     -webkit-padding-start: 0px;
+}
+
+li {
     list-style-type: none;
 }
+
+.row {
+    margin-left: 10px;
+    margin-bottom: 15px;
+}
+
+.title {
+    font-size: large;    
+}
+
+
 
 .button {
     border-bottom-width: 1px;

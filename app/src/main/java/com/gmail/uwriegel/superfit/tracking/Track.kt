@@ -6,10 +6,10 @@ package com.gmail.uwriegel.superfit.tracking
  * Track model
  */
 data class Track (
-        val latitude: Double,
-        val longitude: Double,
-        val time: Long,
-        val speed: Float,
-        val distance: Float){
+            val latitude: Double,
+            val longitude: Double,
+            val time: Long,
+            val speed: Float,
+            val distance: Float){
 }
 
