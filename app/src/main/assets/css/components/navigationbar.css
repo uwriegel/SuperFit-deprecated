@@ -28,18 +28,22 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-#marker {
+.marker {
+    margin-top: 4px;
+    opacity: .6;
     position: absolute;
-    right: 25px;
-    top: 120px;
-    transform: rotate(45deg);
-    transition: transform 1s;
+    transform: rotate(-45deg);
+    transition: transform 0.5s;
     font-size: x-small;
-    /*transform-origin: 6px 12px;*/
 }
 
-#marker.opened {
-    transform: rotate(225deg);
+.marker.opened {
+    transform: rotate(45deg);
+}
+
+.tracksTitle {
+    margin-left: 20px;
+    font-size: large;
 }
 
 #drawerHeader {
@@ -50,16 +54,14 @@ body {
 }
 
 #icon {
-    width: 64px;
+    width: 48px;
     margin-top: 40px;
-    border-radius: 50%;
 }
 
 #drawerHeader h1 {
     font-size: larger;
     font-weight: 400;
-    -webkit-margin-before: 1.1em;
-    -webkit-margin-after: 0.3em;
+    padding-bottom: 10px;
 }
 
 #drawerHeader div {
@@ -83,4 +85,11 @@ ul {
     list-style-position: inside;
     -webkit-padding-start: 0px;
     list-style-type: none;
+}
+
+.button {
+    border-bottom-width: 1px;
+    border-bottom-color: lightgray;
+    border-bottom-style: solid;
+    padding: 15px;
 }

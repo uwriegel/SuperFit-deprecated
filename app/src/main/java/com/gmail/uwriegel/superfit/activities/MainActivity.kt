@@ -165,8 +165,10 @@ class MainActivity : AppCompatActivity() {
         val navViewSettings = navWebView.settings
         navViewSettings.javaScriptEnabled = true
         navWebView.webChromeClient = WebChromeClient()
-//        navWebView.addJavascriptInterface(object {
-//        }, "Native")
+        navWebView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun doHapticFeedback() = doAsync { uiThread { mainWebView.playSoundEffect(SoundEffectConstants.CLICK) } }
+        }, "Native")
         navWebView.isHapticFeedbackEnabled = true
         navWebView.loadUrl("file:///android_asset/navigationbar.html")
     }
