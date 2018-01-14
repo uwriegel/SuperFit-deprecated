@@ -22,7 +22,6 @@ class TracksContentProvider : ContentProvider() {
 
         val rowId = when(uriType) {
             TRACKS -> db.insert(DBHandler.TABLE_TRACKS, null, values)
-                //Uri.parse("${DBHandler.TABLE_TRACKS}/id")
             TRACKPOINTS -> db.insert(DBHandler.TABLE_TRACK_POINTS, null, values)
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
@@ -33,13 +32,19 @@ class TracksContentProvider : ContentProvider() {
 
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
-        val queryBuilder = SQLiteQueryBuilder()
-        queryBuilder.tables = DBHandler.TABLE_TRACKS
-
         val uriType = uriMatcher.match(uri)
+
+        val queryBuilder = SQLiteQueryBuilder()
+        queryBuilder.tables =
+            when(uriType) {
+                TRACKPOINTS -> DBHandler.TABLE_TRACK_POINTS
+                else -> DBHandler.TABLE_TRACKS
+            }
+
         when(uriType) {
             TRACKS -> {}
             TRACKS_ID -> queryBuilder.appendWhere("${DBHandler.KEY_ID}=${uri.lastPathSegment}")
+            TRACKPOINTS -> {}
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
 
@@ -87,5 +92,7 @@ class TracksContentProvider : ContentProvider() {
 
         val TRACKS_CONTENT_URI = Uri.parse("content://$Authority/$TRACKS_TABLE")
         val TRACKPOINTS_CONTENT_URI = Uri.parse("content://$Authority/$TRACKPOINTS_TABLE")
+
+        fun createTrackUri(trackNumber: Long): Uri = Uri.parse("content://$Authority/$TRACKS_TABLE/$trackNumber")
     }
 }

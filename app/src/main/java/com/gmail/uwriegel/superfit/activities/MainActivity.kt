@@ -2,33 +2,32 @@ package com.gmail.uwriegel.superfit.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.gmail.uwriegel.superfit.R
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.view.SoundEffectConstants
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Toast
+import com.gmail.uwriegel.superfit.R
 import com.gmail.uwriegel.superfit.sensor.SensorService
+import com.gmail.uwriegel.superfit.tracking.DataSource
+import com.gmail.uwriegel.superfit.tracking.exportToGpx
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import java.util.ArrayList
-import java.util.HashMap
-import android.app.ActivityManager
-import android.content.Context
-import com.gmail.uwriegel.superfit.tracking.DataSource
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_display.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -184,10 +183,18 @@ class MainActivity : AppCompatActivity() {
                 navWebView.evaluateJavascript("onTracks($json)", null)
             } }
 
+            @Suppress("DEPRECATION")
             @JavascriptInterface
-            fun onTrackSelected(track: Long) {
-                var affe = track
-                var aff = affe + 9
+            fun onTrackSelected(trackNumber: Long) {
+                val dataSource = DataSource(this@MainActivity)
+                val track = dataSource.getTrack(trackNumber)
+                if (track != null)
+                {
+                    val date = Date(track.time)
+                    val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
+                    val trackPoints = dataSource.getTrackPoints(trackNumber)
+                    exportToGpx(name, trackPoints)
+                }
             }
 
         }, "Native")
