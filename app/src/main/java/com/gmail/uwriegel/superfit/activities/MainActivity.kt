@@ -184,6 +184,11 @@ class MainActivity : AppCompatActivity() {
                 navWebView.evaluateJavascript("onTracks($json)", null)
             } }
 
+            @JavascriptInterface
+            fun onTrackSelected() {
+
+            }
+
         }, "Native")
         navWebView.isHapticFeedbackEnabled = true
         navWebView.loadUrl("file:///android_asset/navigationbar.html")

@@ -90,16 +90,18 @@ li {
     list-style-type: none;
 }
 
-.row {
-    margin-left: 10px;
-    margin-bottom: 15px;
+.track {
+    margin-bottom: 30px;
+    display: flex;
 }
 
 .title {
     font-size: large;    
 }
 
-
+.trackIcon {
+    margin: 0px 10px 10px 10px;
+}
 
 .button {
     border-bottom-width: 1px;
