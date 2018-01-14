@@ -55,11 +55,11 @@ function onTracks(tracks: TrackData[]) {
     })
     
     function fillNext(lisToFill: HTMLLIElement[]) {
-        const lis = lisToFill.slice(0, 10)
+        const lis = lisToFill.slice(0, 5)
         lis.forEach(li => trackList.appendChild(li))
-        const restLis = lisToFill.slice(10)
+        const restLis = lisToFill.slice(5)
         if (restLis.length > 0)
-            setTimeout(() => fillNext(restLis), 100)
+            setTimeout(() => fillNext(restLis), 150)
     }
 
     fillNext(lis)
