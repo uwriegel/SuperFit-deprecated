@@ -34,6 +34,7 @@ import java.util.*
 // TODO: DATABase ändern: wenn track gespeichert, kennzeichnen, damit löschbar
 // TODO: In NavigationBar Möglichkeit, alle Herzfrequenz- und Radsensoren auswählbar machen, Auswahl speichern und kontrollieren
 // TODO: Ausgewähltes Ant+-Gerät direkt ansprechen
+// TODO: TEst
 class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
