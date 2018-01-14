@@ -1,10 +1,13 @@
 package com.gmail.uwriegel.superfit.tracking
 
+import android.net.Uri
 import android.util.Xml
 import com.gmail.uwriegel.superfit.formatRfc3339
 import com.gmail.uwriegel.superfit.extensions.document
 import com.gmail.uwriegel.superfit.extensions.element
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.io.OutputStreamWriter
 import java.util.*
 
 /**
@@ -13,12 +16,10 @@ import java.util.*
  * Exports a track in the dataBase to gpx file
  */
 // TODO: Namespace, Headersection
-fun exportToGpx(filename: String, trackPoints: Sequence<TrackPoint>) {
+fun exportToGpx(outputStream: OutputStream, trackPoints: Sequence<TrackPoint>) {
 
-    val path = "/sdcard/oruxmaps/tracklogs/${filename}"
     val serializer = Xml.newSerializer()
-    val writer = FileOutputStream(path)
-    serializer.setOutput(writer, "UTF-8")
+    serializer.setOutput(outputStream, "UTF-8")
 
     serializer.document("UTF-8", true, {
         element(null, "gpx", {
@@ -38,8 +39,6 @@ fun exportToGpx(filename: String, trackPoints: Sequence<TrackPoint>) {
             })
         })
     })
-
-    writer.close()
 }
 
 

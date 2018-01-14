@@ -2,10 +2,12 @@ package com.gmail.uwriegel.superfit.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -29,7 +31,9 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
 
-
+// TODO: DATABase ändern: wenn track gespeichert, kennzeichnen, damit löschbar
+// TODO: In NavigationBar Möglichkeit, alle Herzfrequenz- und Radsensoren auswählbar machen, Auswahl speichern und kontrollieren
+// TODO: Ausgewähltes Ant+-Gerät direkt ansprechen
 class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -127,6 +131,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CREATE_REQUEST_CODE) {
+                if (data != null) {
+                    val dataSource = DataSource(this@MainActivity)
+                    val trackPoints = dataSource.getTrackPoints(currentTrackNumber)
+                    val outputStream = getContentResolver().openOutputStream(data.data)
+                    exportToGpx(outputStream, trackPoints)
+                    outputStream.close()
+                }
+            }
+        }
+    }
+
     @Suppress("DEPRECATION")
     private fun initialize() {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -192,8 +210,13 @@ class MainActivity : AppCompatActivity() {
                 {
                     val date = Date(track.time)
                     val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
-                    val trackPoints = dataSource.getTrackPoints(trackNumber)
-                    exportToGpx(name, trackPoints)
+
+                    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    intent.type = "text/xml"
+                    intent.putExtra(Intent.EXTRA_TITLE, name)
+                    currentTrackNumber = trackNumber
+                    startActivityForResult(intent, CREATE_REQUEST_CODE)
                 }
             }
 
@@ -202,7 +225,10 @@ class MainActivity : AppCompatActivity() {
         navWebView.loadUrl("file:///android_asset/navigationbar.html")
     }
 
+    private var currentTrackNumber = -1L
+
     companion object {
         val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
+        private val CREATE_REQUEST_CODE = 40
     }
 }

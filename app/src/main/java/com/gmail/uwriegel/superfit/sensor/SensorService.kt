@@ -69,31 +69,26 @@ class SensorService : Service() {
                 if (isStarted) {
                     stopForeground(true)
                     locationManager.stop()
-                    //exportToGpx()
 
                     val track = locationManager.getTrackNumber()
                     if (track != null)
                         dataSource.updateTrack(track, data.distance, data.timeSpan.toInt(), data.averageSpeed)
 
-                    val fileToCopy = getDatabasePath("Tracks.db")
-                    val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db")
-
-                    val fis = FileInputStream(fileToCopy)
-                    val fos = FileOutputStream(destinationFile)
-
-                    val b = ByteArray(1024)
-                    var noOfBytesRead = 0
-
-                    while(noOfBytesRead != -1) {
-                        noOfBytesRead = fis.read(b)
-                        if (noOfBytesRead != -1)
-                            fos.write(b, 0, noOfBytesRead)
-                    }
-                    fis.close()
-                    fos.close()
-
-
-
+//                    val fileToCopy = getDatabasePath("Tracks.db")
+//                    val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db")
+//                    val fis = FileInputStream(fileToCopy)
+//                    val fos = FileOutputStream(destinationFile)
+//
+//                    val b = ByteArray(1024)
+//                    var noOfBytesRead = 0
+//
+//                    while(noOfBytesRead != -1) {
+//                        noOfBytesRead = fis.read(b)
+//                        if (noOfBytesRead != -1)
+//                            fos.write(b, 0, noOfBytesRead)
+//                    }
+//                    fis.close()
+//                    fos.close()
 
                     isStarted = false
                     stopSelf()
