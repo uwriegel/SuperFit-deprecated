@@ -10,11 +10,11 @@ else
     displayStart()
 
 const starterClicker = new ButtonClicker(starter, evt => starter, 
-    typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
+    () => Native.doHapticFeedback(), 
     () => Native.start() )
 
 const stopperClicker = new ButtonClicker(stopper, evt => stopper, 
-    typeof Native != undefined ? () => Native.doHapticFeedback() : null, 
+    () => Native.doHapticFeedback(), 
     () => Native.stop() )
 
 function displayStart() {

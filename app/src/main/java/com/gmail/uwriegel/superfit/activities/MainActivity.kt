@@ -185,8 +185,9 @@ class MainActivity : AppCompatActivity() {
             } }
 
             @JavascriptInterface
-            fun onTrackSelected() {
-
+            fun onTrackSelected(track: Long) {
+                var affe = track
+                var aff = affe + 9
             }
 
         }, "Native")

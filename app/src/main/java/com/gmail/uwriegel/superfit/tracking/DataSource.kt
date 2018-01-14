@@ -46,6 +46,7 @@ class DataSource(context: Context) {
     fun getTracks(): Sequence<Track> {
         return buildSequence {
             val cursor = contentResolver.query(TracksContentProvider.TRACKS_CONTENT_URI, arrayOf(
+                    DBHandler.KEY_ID,
                     DBHandler.KEY_LATITUDE,
                     DBHandler.KEY_LONGITUDE,
                     DBHandler.KEY_TIME,
@@ -55,11 +56,12 @@ class DataSource(context: Context) {
                 cursor.moveToFirst()
                 while (true) {
                     yield(Track(
-                            cursor.getDouble(0),
+                            cursor.getLong(0),
                             cursor.getDouble(1),
-                            cursor.getLong(2),
-                            cursor.getFloat(3),
-                            cursor.getFloat(4)))
+                            cursor.getDouble(2),
+                            cursor.getLong(3),
+                            cursor.getFloat(4),
+                            cursor.getFloat(5)))
                     if (!cursor.moveToNext())
                         break
                 }

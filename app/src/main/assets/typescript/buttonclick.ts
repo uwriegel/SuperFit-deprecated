@@ -1,7 +1,7 @@
 
 class ButtonClicker {
 
-    constructor(clickableElement: HTMLElement, 
+    constructor(private clickableElement: HTMLElement, 
         private getClicked: (evt: MouseEvent) => HTMLElement, 
         private feedback: () => void,
         private onClick: () => void) {
@@ -48,14 +48,12 @@ class ButtonClicker {
             }
             const radius = (canvas.height / 2 - 6) + alpha * (canvas.width / 2 - (canvas.height / 2 - 6))
 
-            // TODO:
-            context.fillStyle = "lightblue";
-            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = getComputedStyle(clickedElement, null).getPropertyValue('background-color')
+            context.fillRect(0, 0, canvas.width, canvas.height)
             
             context.beginPath()
             context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false)
-            // TODO:
-            context.fillStyle = '#e0e0ff'
+            context.fillStyle  = this.clickedColor
             context.globalAlpha = 1 - alpha
             context.fill()
             var url = canvas.toDataURL()
@@ -79,6 +77,9 @@ class ButtonClicker {
         requestAnimationFrame(animate)
     }
 
+    private readonly htmlStyles = window.getComputedStyle(document.querySelector("html"));
+    private readonly clickedColor = this.htmlStyles.getPropertyValue('--button-clicked'); 
+    private readonly backgroundColor = this.clickableElement.style.backgroundColor
     private inClick = false
 }
 

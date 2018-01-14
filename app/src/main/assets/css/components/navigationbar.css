@@ -87,11 +87,11 @@ ul {
 }
 
 li {
+    padding-bottom: 30px;
     list-style-type: none;
 }
 
 .track {
-    margin-bottom: 30px;
     display: flex;
 }
 

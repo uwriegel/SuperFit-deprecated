@@ -1,5 +1,6 @@
 
 declare class TrackData {
+    trackNr: number
     latitude: number
     longitude: number
     time: number
@@ -29,6 +30,8 @@ tracks.onclick = () => {
 function onTracks(tracks: TrackData[]) {
     var lis = tracks.map(n => {
         const li = trackFactory.cloneNode(true) as HTMLLIElement
+        li.dataset.nr = n.trackNr.toString()
+
         const row = li.querySelector(".title")
         const date = new Date(n.time)
         row.innerHTML = date.toLocaleString(undefined, {
@@ -42,7 +45,22 @@ function onTracks(tracks: TrackData[]) {
         const distance = li.querySelector(".distance")
         distance.innerHTML = `${n.distance.toFixed(0)} km`
 
+        const trackClicker = new ButtonClicker(li,
+            evt => li, 
+            () => Native.doHapticFeedback(), 
+            () => Native.onTrackSelected(Number.parseInt(li.dataset.nr))
+        )
+            
         return li
     })
-    lis.forEach(li => trackList.appendChild(li))
+    
+    function fillNext(lisToFill: HTMLLIElement[]) {
+        const lis = lisToFill.slice(0, 10)
+        lis.forEach(li => trackList.appendChild(li))
+        const restLis = lisToFill.slice(10)
+        if (restLis.length > 0)
+            setTimeout(() => fillNext(restLis), 100)
+    }
+
+    fillNext(lis)
 }
