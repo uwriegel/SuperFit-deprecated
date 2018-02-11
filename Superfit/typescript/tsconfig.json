@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "outDir": "../../app/src/main/assets/scripts",
+    "sourceMap": false,
+    "noImplicitAny": true,
+    "alwaysStrict": true
+  },
+    "exclude": [
+        "node_modules"
+    ]
+}

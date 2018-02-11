@@ -6,3 +6,7 @@ build/
 gradle/
 *.js
 *.map
+/Superfit/obj/Debug
+/Superfit/.vs/config/applicationhost.config
+/Superfit/bin
+/Superfit/.vs/Superfit/v15
