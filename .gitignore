@@ -5,7 +5,9 @@ SuperFit.iml
 build/
 gradle/
 *.js
+*.ts
 *.map
+tsconfig.json
 /Superfit/obj/Debug
 /Superfit/.vs/config/applicationhost.config
 /Superfit/bin
