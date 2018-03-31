@@ -4,6 +4,7 @@ SuperFit.iml
 .idea/
 build/
 gradle/
+app/src/main/assets/typescript/
 *.js
 *.ts
 *.map
