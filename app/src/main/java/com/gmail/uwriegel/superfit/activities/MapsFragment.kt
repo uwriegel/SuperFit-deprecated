@@ -35,19 +35,19 @@ class MapsFragment : Fragment(), LocationSetter {
         this.preferencesFacade = AndroidPreferences(this.activity!!.getSharedPreferences(this.javaClass.simpleName, Context.MODE_PRIVATE))
         mapView = layout.findViewById(R.id.mapView)
         layout.findViewById<RotateView>(R.id.rotateView).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        mapView.model.frameBufferModel.overdrawFactor = 1.0
-        mapView.model.init(this.preferencesFacade)
-        mapView.isClickable = true
-        mapView.mapScaleBar!!.isVisible = true // false
-        mapView.setBuiltInZoomControls(false) // false
-        mapView.mapZoomControls.isAutoHide = true
-        mapView.mapZoomControls.setZoomLevelMin(0.toByte())
-        mapView.mapZoomControls.setZoomLevelMax(24.toByte())
+        mapView!!.model.frameBufferModel.overdrawFactor = 1.0
+        mapView!!.model.init(this.preferencesFacade)
+        mapView!!.isClickable = true
+        mapView!!.mapScaleBar!!.isVisible = true // false
+        mapView!!.setBuiltInZoomControls(false) // false
+        mapView!!.mapZoomControls.isAutoHide = true
+        mapView!!.mapZoomControls.setZoomLevelMin(0.toByte())
+        mapView!!.mapZoomControls.setZoomLevelMax(24.toByte())
 
         createTileCaches()
         createLayers()
 
-        mapView.setLocationSetter(this)
+        mapView!!.setLocationSetter(this)
 
         locationManager = activity!!.getSystemService(Activity.LOCATION_SERVICE) as LocationManager
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener)
@@ -58,29 +58,38 @@ class MapsFragment : Fragment(), LocationSetter {
     override fun changeValue(setLocation: Boolean) {
         this.setLocation = setLocation
         if (this.setLocation && recentLocation != null)
-            mapView.setCenter(LatLong(recentLocation!!.latitude, recentLocation!!.longitude))
+            mapView!!.setCenter(LatLong(recentLocation!!.latitude, recentLocation!!.longitude))
     }
 
     fun setLocationCenter() {
-        mapView.onCenter()
+        mapView!!.onCenter()
     }
 
     override fun onPause() {
-        mapView.model.save(this.preferencesFacade)
+        mapView!!.model.save(this.preferencesFacade)
         this.preferencesFacade.save()
         super.onPause()
     }
 
+    override fun onDestroyView() {
+        mapView = null
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     private fun createTileCaches() {
         this.tileCaches.add(AndroidUtil.createTileCache(activity, this.javaClass.simpleName,
-                mapView.model.displayModel.tileSize, 1.0f,
-                mapView.model.frameBufferModel.overdrawFactor))
+                mapView!!.model.displayModel.tileSize, 1.0f,
+                mapView!!.model.frameBufferModel.overdrawFactor))
     }
 
     private fun createLayers() {
         val tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches[0],
-                this.mapView.model.mapViewPosition, getMapFile(), InternalRenderTheme.OSMARENDER, false, true, false)
-        this.mapView.layerManager!!.layers.add(tileRendererLayer)
+                this.mapView!!.model.mapViewPosition, getMapFile(), InternalRenderTheme.OSMARENDER, false, true, false)
+        this.mapView!!.layerManager!!.layers.add(tileRendererLayer)
     }
 
     private fun getMapFile(): MapDataStore {
@@ -108,11 +117,13 @@ class MapsFragment : Fragment(), LocationSetter {
             }
             recentLocation = location
             if (setLocation) {
-                mapView.setCenter(LatLong(location.latitude, location.longitude))
-                if (::center.isInitialized)
-                    mapView.layerManager!!.layers.remove(center)
-                center = LocationMarker(LatLong(location.latitude, location.longitude))
-                mapView.layerManager!!.layers.add(center)
+                if (mapView != null) {
+                    mapView!!.setCenter(LatLong(location.latitude, location.longitude))
+                    if (::center.isInitialized)
+                        mapView!!.layerManager!!.layers.remove(center)
+                    center = LocationMarker(LatLong(location.latitude, location.longitude))
+                    mapView!!.layerManager!!.layers.add(center)
+                }
             }
         }
 
@@ -132,7 +143,7 @@ class MapsFragment : Fragment(), LocationSetter {
     }
 
     private lateinit var preferencesFacade: PreferencesFacade
-    private lateinit var mapView: MapView
+    private var mapView: MapView? = null
     private var tileCaches: MutableList<TileCache> = ArrayList()
     private lateinit var locationManager: LocationManager
     private var setLocation = true

@@ -16,6 +16,9 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.concurrent.timerTask
+import com.gmail.uwriegel.superfit.R.id.viewPager
+
+
 
 
 class DisplayActivity : AppCompatActivity() {
@@ -31,8 +34,10 @@ class DisplayActivity : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                if (position == 1)
-                    (pager.adapter as PagerAdapter).getMaps().setLocationCenter()
+                if (position == 1) {
+                    val maps = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":1") as MapsFragment
+                    maps.setLocationCenter()
+                }
             }
         })
     }
@@ -40,33 +45,16 @@ class DisplayActivity : AppCompatActivity() {
     private class PagerAdapter(fm: FragmentManager?)
         : FragmentPagerAdapter(fm) {
 
-        fun getMaps(): MapsFragment {
-            return maps
-        }
-
-        fun getDisplay(): DisplayFragment? {
-            return display
-        }
-
         override fun getCount(): Int {
             return 2
         }
 
         override fun getItem(position: Int): Fragment {
             when (position) {
-                0 -> {
-                    display = DisplayFragment()
-                    return display!!
-                }
-                else -> {
-                    maps = MapsFragment()
-                    return maps
-                }
+                0 -> return DisplayFragment()
+                else -> return MapsFragment()
             }
         }
-
-        private lateinit var maps: MapsFragment
-        private var display: DisplayFragment? = null
     }
 
     override fun onResume() {
@@ -80,7 +68,8 @@ class DisplayActivity : AppCompatActivity() {
             doAsync { uiThread {
 
                 if (display == null)
-                    display = (pager.adapter as PagerAdapter).getDisplay()
+                    display = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":0") as DisplayFragment
+
 
                 if (display != null) {
                     display!!.onSensorData(data)
