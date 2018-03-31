@@ -1,19 +1,17 @@
 package com.gmail.uwriegel.superfit.activities
 
-import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import com.gmail.uwriegel.superfit.R
-import kotlinx.android.synthetic.main.activity_display.*
 import android.view.View
 import android.view.WindowManager
-import android.webkit.JavascriptInterface
 import com.gmail.uwriegel.superfit.sensor.SensorService
 import com.gmail.uwriegel.superfit.sensor.data
 import com.gmail.uwriegel.superfit.sensor.gpsActive
-import com.gmail.uwriegel.superfit.tracking.DataSource
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -22,39 +20,66 @@ import kotlin.concurrent.timerTask
 
 
 class DisplayActivity : AppCompatActivity() {
-
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display)
 
-        displayWebView.setBackgroundColor(0)
-        val webSettings = displayWebView.settings
-        webSettings.javaScriptEnabled = true
-        // webSettings.domStorageEnabled = true
-        WebView.setWebContentsDebuggingEnabled(true)
-        // CORS allowed
-        webSettings.allowUniversalAccessFromFileURLs = true
-        displayWebView.webChromeClient = WebChromeClient()
+        pager = findViewById(R.id.viewPager) as ViewPager
+        pager.adapter = PagerAdapter(supportFragmentManager)
+    }
 
-        displayWebView.isHapticFeedbackEnabled = true
-        displayWebView.loadUrl("file:///android_asset/display.html")
+    private class PagerAdapter(fm: FragmentManager?)
+        : FragmentPagerAdapter(fm) {
+
+        fun getMaps(): MapsFragment {
+            return maps
+        }
+
+        fun getDisplay(): DisplayFragment? {
+            return display
+        }
+
+        override fun getCount(): Int {
+            return 2
+        }
+
+        override fun getItem(position: Int): Fragment {
+            when (position) {
+                0 -> {
+                    display = DisplayFragment()
+                    return display!!
+                }
+                else -> {
+                    maps = MapsFragment()
+                    return maps
+                }
+            }
+        }
+
+        private lateinit var maps: MapsFragment
+        private var display: DisplayFragment? = null
     }
 
     override fun onResume() {
         super.onResume()
 
         var gpsActiveSent = false
+
+        var display: DisplayFragment? = null
         timer = Timer()
         timer?.schedule(timerTask {
             doAsync { uiThread {
-                val gson = Gson()
-                val json = gson.toJson(data)
-                displayWebView.evaluateJavascript("onSensorData($json)", null)
 
-                if (!gpsActiveSent && gpsActive) {
-                    displayWebView.evaluateJavascript("onGpsActive()", null)
-                    gpsActiveSent = true
+                if (display == null)
+                    display = (pager.adapter as PagerAdapter).getDisplay()
+
+                if (display != null) {
+                    display!!.onSensorData(data)
+
+                    if (!gpsActiveSent && gpsActive) {
+                        display!!.onGpsActive()
+                        gpsActiveSent = true
+                    }
                 }
             } }
         }, 0L, 500L)
@@ -93,4 +118,5 @@ class DisplayActivity : AppCompatActivity() {
     private var service: SensorService? = null
     var timer: Timer? = null
     var gpsActiveSent = false
+    lateinit var pager: ViewPager
 }
