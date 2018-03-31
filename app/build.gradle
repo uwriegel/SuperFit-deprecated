@@ -31,8 +31,14 @@ dependencies {
     implementation files('libs/antpluginlib_3-5-0.jar')
     implementation files('libs/fit_14.10.jar')
     implementation 'com.android.support:design:26.1.0'
-    compile "org.jetbrains.anko:anko-common:$anko_version"
-    compile 'com.google.code.gson:gson:2.8.2'
+    implementation "org.jetbrains.anko:anko-common:$anko_version"
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    implementation "org.mapsforge:mapsforge-core:$mapsforge_version"
+    implementation "org.mapsforge:mapsforge-map:$mapsforge_version"
+    implementation "org.mapsforge:mapsforge-map-reader:$mapsforge_version"
+    implementation "org.mapsforge:mapsforge-themes:$mapsforge_version"
+    implementation "org.mapsforge:mapsforge-map-android:$mapsforge_version"
 }
 kotlin {
     experimental {

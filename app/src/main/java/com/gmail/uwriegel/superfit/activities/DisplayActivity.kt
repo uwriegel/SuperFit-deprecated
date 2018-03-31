@@ -15,7 +15,6 @@ import com.gmail.uwriegel.superfit.sensor.gpsActive
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
-import com.google.gson.Gson
 import kotlin.concurrent.timerTask
 
 
@@ -24,8 +23,18 @@ class DisplayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display)
 
-        pager = findViewById(R.id.viewPager) as ViewPager
+        pager = findViewById<ViewPager>(R.id.viewPager)
         pager.adapter = PagerAdapter(supportFragmentManager)
+        pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                if (position == 1)
+                    (pager.adapter as PagerAdapter).getMaps().setLocationCenter()
+            }
+        })
     }
 
     private class PagerAdapter(fm: FragmentManager?)
