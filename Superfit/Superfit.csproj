@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="typescript\buttonclick.ts" />
+    <TypeScriptCompile Include="typescript\connection.ts" />
     <TypeScriptCompile Include="typescript\display.ts" />
     <TypeScriptCompile Include="typescript\main.ts" />
     <TypeScriptCompile Include="typescript\navigationbar.ts" />

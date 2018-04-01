@@ -4,12 +4,11 @@ SuperFit.iml
 .idea/
 build/
 gradle/
-app/src/main/assets/typescript/
 *.js
-*.ts
 *.map
 tsconfig.json
 /Superfit/obj/Debug
 /Superfit/.vs/config/applicationhost.config
 /Superfit/bin
 /Superfit/.vs/Superfit/v15
+/Superfit/obj/Release/Superfit.csproj.CoreCompileInputs.cache

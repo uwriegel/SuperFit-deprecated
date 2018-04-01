@@ -74,9 +74,6 @@ class MainActivity : AppCompatActivity() {
 
             @JavascriptInterface
             fun stop() = doAsync { uiThread {
-                val startIntent = Intent(this@MainActivity, SensorService::class.java)
-                startIntent.action = SensorService.STOP
-                startService(startIntent)
                 finish()
             } }
         }, "Native")
@@ -153,12 +150,10 @@ class MainActivity : AppCompatActivity() {
         if (started)
             display()
 
-        mainWebView.loadUrl("file:///android_asset/main.html#$started")
+        mainWebView.loadUrl("file:///android_asset/main.html")
     }
 
     private fun display() {
-        mainWebView.evaluateJavascript("displayStop()", null)
-
         val intent = Intent(this, DisplayActivity::class.java)
         startActivity(intent)
     }

@@ -12,13 +12,15 @@ import com.gmail.uwriegel.superfit.R
 import com.gmail.uwriegel.superfit.activities.MainActivity
 import com.gmail.uwriegel.superfit.antplussensors.BikeMonitor
 import com.gmail.uwriegel.superfit.antplussensors.HeartRateMonitor
+import com.gmail.uwriegel.superfit.http.startServer
+import com.gmail.uwriegel.superfit.http.stopServer
 import com.gmail.uwriegel.superfit.tracking.DataSource
 import com.gmail.uwriegel.superfit.tracking.LocationManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class SensorService : Service() {
+class SensorService : Service(), ServiceCallback {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         return when(intent?.action) {
@@ -48,6 +50,8 @@ class SensorService : Service() {
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.notify(NOTIFICATION_ID, notification)
 
+                    startServer(this)
+
                     heartRateMonitor = HeartRateMonitor(context = this) { hr -> data.heartRate = hr }
 
                     bikeMonitor = BikeMonitor(this,
@@ -65,14 +69,25 @@ class SensorService : Service() {
 
                 START_STICKY
             }
-            STOP -> {
-                if (isStarted) {
-                    stopForeground(true)
-                    locationManager.stop()
+            else -> START_NOT_STICKY
+        }
+    }
 
-                    val track = locationManager.getTrackNumber()
-                    if (track != null)
-                        dataSource.updateTrack(track, data.distance, data.timeSpan.toInt(), data.averageSpeed)
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
+    override fun stopService() {
+        if (isStarted) {
+
+            stopServer()
+
+            stopForeground(true)
+            locationManager.stop()
+
+            val track = locationManager.getTrackNumber()
+            if (track != null)
+                dataSource.updateTrack(track, data.distance, data.timeSpan.toInt(), data.averageSpeed)
 
 //                    val fileToCopy = getDatabasePath("Tracks.db")
 //                    val destinationFile = File("/sdcard/oruxmaps/tracklogs/tracks.db")
@@ -90,17 +105,9 @@ class SensorService : Service() {
 //                    fis.close()
 //                    fos.close()
 
-                    isStarted = false
-                    stopSelf()
-                }
-                START_NOT_STICKY
-            }
-            else -> START_NOT_STICKY
+            isStarted = false
+            stopSelf()
         }
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return null
     }
 
     private val NOTIFICATION_ID = 34
@@ -112,7 +119,6 @@ class SensorService : Service() {
 
     companion object {
         val START = "START"
-        val STOP = "STOP"
     }
 }
 

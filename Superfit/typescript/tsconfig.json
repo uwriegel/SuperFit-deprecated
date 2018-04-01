@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es2017",
     "outDir": "../../app/src/main/assets/scripts",
     "sourceMap": false,
