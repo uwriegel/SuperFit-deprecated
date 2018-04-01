@@ -51,6 +51,7 @@ private fun clientConnected(client: Socket) {
             istream.read(buffer)
             val header = String(buffer, UTF8_CHARSET)
             val method = checkMethod(header)
+            var keepOpen = false
             when (method) {
                 "check" -> sendResponse(client, """{"connected": true}""")
                 "stop" -> {
@@ -60,9 +61,17 @@ private fun clientConnected(client: Socket) {
                     }
                     sendResponse(client, """{"connected": false}""")
                 }
-                else -> sendResponse(client, """{"error": "method not implemented"}""")
+                else -> {
+                    if (checkWebSocket((header))) {
+                        upgrade(client, header)
+                        keepOpen = true
+                    }
+                    else
+                        sendResponse(client, """{"error": "method not implemented"}""")
+                }
             }
-            client.close()
+            if (!keepOpen)
+                client.close()
         }
         catch (err: Exception) {}
         return@Thread
@@ -72,6 +81,10 @@ private fun clientConnected(client: Socket) {
 private fun checkMethod(header: String): String {
     val posEnd = header.indexOf(" ", 5)
     return header.substring(5, posEnd)
+}
+
+private fun checkWebSocket(header: String): Boolean {
+    return header.indexOf("Upgrade: websocket", 0, true) != -1
 }
 
 //val responseBody =
