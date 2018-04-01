@@ -1,5 +1,6 @@
 package com.gmail.uwriegel.superfit.activities
 
+import android.app.Activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -59,29 +60,7 @@ class DisplayActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        var gpsActiveSent = false
-
-        var display: DisplayFragment? = null
-        timer = Timer()
-        timer?.schedule(timerTask {
-            doAsync { uiThread {
-
-                if (display == null)
-                    display = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":0") as DisplayFragment
-
-
-                if (display != null) {
-                    display!!.onSensorData(data)
-
-                    if (!gpsActiveSent && gpsActive) {
-                        display!!.onGpsActive()
-                        gpsActiveSent = true
-                    }
-                }
-            } }
-        }, 0L, 500L)
-
+        mainActivity = this
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         // TODO: dimmable sreen on
         //val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -91,9 +70,7 @@ class DisplayActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-
-        timer?.cancel()
-        timer = null
+//        mainActivity = null
         // this.wakeLock?.release()
     }
 
@@ -114,7 +91,7 @@ class DisplayActivity : AppCompatActivity() {
 
     //private var wakeLock: PowerManager.WakeLock? = null
     private var service: SensorService? = null
-    var timer: Timer? = null
-    var gpsActiveSent = false
     lateinit var pager: ViewPager
 }
+
+var mainActivity: Activity? = null

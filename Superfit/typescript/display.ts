@@ -1,4 +1,9 @@
 
+declare class SensorEvent {
+    data: SensorData
+    gpsActive?: Boolean
+}
+
 declare class SensorData {
     heartRate: number
     speed: number
@@ -9,13 +14,13 @@ declare class SensorData {
     averageSpeed: number
 }
 
-function onSensorData(data: SensorData) {
-    heartRateElement.innerText = data.heartRate.toString()
-    speedElement.innerText = data.speed.toFixed(1)
-    distanceElement.innerText = data.distance.toFixed(2)
-    cadenceElement.innerText = data.cadence.toString()
-    maxSpeedElement.innerText = data.maxSpeed.toFixed(1)
-    let timeSpan = data.timeSpan
+function onSensorData(evt: SensorEvent) {
+    heartRateElement.innerText = evt.data.heartRate.toString()
+    speedElement.innerText = evt.data.speed.toFixed(1)
+    distanceElement.innerText = evt.data.distance.toFixed(2)
+    cadenceElement.innerText = evt.data.cadence.toString()
+    maxSpeedElement.innerText = evt.data.maxSpeed.toFixed(1)
+    let timeSpan = evt.data.timeSpan
     const hour = Math.floor(timeSpan / 3600)
     timeSpan %= 3600
     const minute = Math.floor(timeSpan / 60)
@@ -25,14 +30,14 @@ function onSensorData(data: SensorData) {
     else
         timeElement.innerText = `${pad(minute, 2)}:${pad(timeSpan, 2)}`
     
-    avgSpeedElement.innerText = data.averageSpeed.toFixed(1)
+    avgSpeedElement.innerText = evt.data.averageSpeed.toFixed(1)
+
+    if (evt.gpsActive) {
+        const gps = document.getElementsByClassName("gps")[0]
+        gps.classList.remove("hidden")
+    }
 }
 
-function onGpsActive() {
-    const gps = document.getElementsByClassName("gps")[0]
-    gps.classList.remove("hidden")
-}
-    
 function pad(num: number, size: number) {
     let s = num + ""
     while (s.length < size)
@@ -59,3 +64,4 @@ const displayScroll = new IScroll('#display', {
     shrinkScrollbars: 'clip'
 })
 
+Connection.initialize(data => onSensorData(data))

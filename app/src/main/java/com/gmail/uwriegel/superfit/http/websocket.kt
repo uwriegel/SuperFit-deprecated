@@ -2,6 +2,7 @@ package com.gmail.uwriegel.superfit.http
 
 import com.gmail.uwriegel.superfit.R
 import com.gmail.uwriegel.superfit.activities.DisplayFragment
+import com.gmail.uwriegel.superfit.sensor.Event
 import com.gmail.uwriegel.superfit.sensor.data
 import com.gmail.uwriegel.superfit.sensor.gpsActive
 import com.google.gson.Gson
@@ -21,10 +22,6 @@ fun upgrade(client: Socket, header: String) {
                 sockets.forEach {
                     it.sendData()
                 }
-//                    if (!gpsActiveSent && gpsActive) {
-//                        display!!.onGpsActive()
-//                        gpsActiveSent = true
-//                    }
             } }
         }, 0L, 500L)
     }
@@ -34,7 +31,13 @@ class WebSocket(private val client: Socket, header: String) {
 
     fun sendData() {
         val gson = Gson()
-        val json = gson.toJson(com.gmail.uwriegel.superfit.sensor.data)
+        var gps: Boolean? = null
+        if (!gpsActiveSent && gpsActive) {
+            gps = true
+            gpsActiveSent = true
+        }
+        val event = Event ( com.gmail.uwriegel.superfit.sensor.data, gps)
+        val json = gson.toJson(event)
         val text = json.toString()
         val bytes = text.toByteArray()
         send(bytes)
@@ -63,31 +66,23 @@ class WebSocket(private val client: Socket, header: String) {
             else if (length <= 65535) {
                 buffer[0] = FRRROPCODE
                 buffer[1] = 126
-                val byteArray = getByteArrayFromInt(65535, 2)
-                val eins = byteArray[0]
-                buffer[2] = byteArray[1]
-                buffer[3] = eins
+                val byteArray = getByteArrayFromShort(length.toShort())
+                buffer[2] = byteArray[0]
+                buffer[3] = byteArray[1]
                 4
             }
             else {
                 buffer[0] = FRRROPCODE
                 buffer[1] < 127
-                val byteArray = getByteArrayFromInt(0xFFFFFFFF, 8)
-                val eins = byteArray[0]
-                val zwei = byteArray[1]
-                val drei = byteArray[2]
-                val vier = byteArray[3]
-                val fünf = byteArray[4]
-                val sechs = byteArray[5]
-                val sieben = byteArray[6]
-                buffer[2] = byteArray[7]
-                buffer[3] = sieben
-                buffer[4] = sechs
-                buffer[5] = fünf
-                buffer[6] = vier
-                buffer[7] = drei
-                buffer[8] = zwei
-                buffer[9] = eins
+                val byteArray = getByteArrayFromLong(length.toLong())
+                buffer[2] = byteArray[0]
+                buffer[3] = byteArray[1]
+                buffer[4] = byteArray[2]
+                buffer[5] = byteArray[3]
+                buffer[6] = byteArray[4]
+                buffer[7] = byteArray[5]
+                buffer[8] = byteArray[6]
+                buffer[9] = byteArray[7]
                 10
             }
 
@@ -108,11 +103,12 @@ class WebSocket(private val client: Socket, header: String) {
         val ende = 3
     }
 
-    fun getByteArrayFromInt(n: Long, size: Int): ByteArray {
-        val result = ByteArray(size, {0})
-        for (i: Int in 0 until size)
-            result[result.size - i - 1] = n.and(0xFF).toByte()
-        return result
+    fun getByteArrayFromShort(n: Short): ByteArray {
+        return byteArrayOf((n.toInt() ushr 8).toByte(), n.toByte())
+    }
+
+    fun getByteArrayFromLong(n: Long): ByteArray {
+        return byteArrayOf((n ushr 56).toByte(), (n ushr 48).toByte(), (n ushr 40).toByte(), (n ushr 32).toByte(), (n ushr 24).toByte(), (n ushr 16).toByte(), (n ushr 8).toByte(), n.toByte())
     }
 
     init {
@@ -130,6 +126,8 @@ class WebSocket(private val client: Socket, header: String) {
         ostream.write(response.toByteArray())
         ostream.flush()
     }
+
+    var gpsActiveSent = false
 }
 
 private val sockets: MutableList<WebSocket> = mutableListOf()

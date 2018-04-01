@@ -1,5 +1,10 @@
 package com.gmail.uwriegel.superfit.sensor
 
+data class Event (
+    var data: SensorData,
+    var gpsActive: Boolean?
+){}
+
 /**
  * Created by urieg on 10.01.2018.
  */

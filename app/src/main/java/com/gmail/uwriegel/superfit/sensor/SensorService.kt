@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat
 import android.app.PendingIntent
 import com.gmail.uwriegel.superfit.R
 import com.gmail.uwriegel.superfit.activities.MainActivity
+import com.gmail.uwriegel.superfit.activities.mainActivity
 import com.gmail.uwriegel.superfit.antplussensors.BikeMonitor
 import com.gmail.uwriegel.superfit.antplussensors.HeartRateMonitor
 import com.gmail.uwriegel.superfit.http.startServer
@@ -106,6 +107,10 @@ class SensorService : Service(), ServiceCallback {
 //                    fos.close()
 
             isStarted = false
+
+            if (mainActivity != null)
+                mainActivity?.finish()
+
             stopSelf()
         }
     }

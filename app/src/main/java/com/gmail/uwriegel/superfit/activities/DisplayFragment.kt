@@ -37,11 +37,5 @@ class DisplayFragment : Fragment() {
         displayWebView.evaluateJavascript("onGpsActive()", null)
     }
 
-    fun onSensorData(data: SensorData) {
-        val gson = Gson()
-        val json = gson.toJson(com.gmail.uwriegel.superfit.sensor.data)
-        displayWebView.evaluateJavascript("onSensorData($json)", null)
-    }
-
     private lateinit var displayWebView: WebView
 }
