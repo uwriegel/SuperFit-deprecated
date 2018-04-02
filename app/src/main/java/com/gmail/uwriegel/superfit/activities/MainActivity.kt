@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -31,6 +32,8 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
 
+// TODO: Location-Permission aus Viewer
+// TODO: FilePermission abfragen im Viewer und im Service
 // TODO: DATABase ändern: wenn track gespeichert, kennzeichnen, damit löschbar
 // TODO: In NavigationBar Möglichkeit, alle Herzfrequenz- und Radsensoren auswählbar machen, Auswahl speichern und kontrollieren
 // TODO: Ausgewähltes Ant+-Gerät direkt ansprechen
@@ -154,8 +157,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun display() {
-        val intent = Intent(this, DisplayActivity::class.java)
-        startActivity(intent)
+        try {
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.setComponent(ComponentName("eu.selfhost.riegel.superfitdisplay","eu.selfhost.riegel.superfitdisplay.ui.DisplayActivity"))
+            startActivity(intent);
+//            intent.action = "eu.selfhost.riegel.superfitdisplay.DISPLAY_SUPERFIT"
+//            startActivity(intent)
+        } catch (e: Exception) {
+            var emil = e
+            val ee = e
+        }
     }
 
     private fun checkPermissions(): Boolean {

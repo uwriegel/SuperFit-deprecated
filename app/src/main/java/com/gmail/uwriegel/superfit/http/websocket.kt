@@ -1,9 +1,6 @@
 package com.gmail.uwriegel.superfit.http
 
-import com.gmail.uwriegel.superfit.R
-import com.gmail.uwriegel.superfit.activities.DisplayFragment
 import com.gmail.uwriegel.superfit.sensor.Event
-import com.gmail.uwriegel.superfit.sensor.data
 import com.gmail.uwriegel.superfit.sensor.gpsActive
 import com.google.gson.Gson
 import org.jetbrains.anko.doAsync
@@ -19,7 +16,8 @@ fun upgrade(client: Socket, header: String) {
         timer = Timer()
         timer?.schedule(timerTask {
             doAsync { uiThread {
-                sockets.forEach {
+                val socketArray = sockets.toTypedArray()
+                socketArray.forEach {
                     it.sendData()
                 }
             } }
