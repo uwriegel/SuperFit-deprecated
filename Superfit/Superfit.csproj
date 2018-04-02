@@ -62,9 +62,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\app\src\main\assets\css\app-display.css">
-      <Link>css\app-display.css</Link>
-    </Content>
     <Content Include="..\app\src\main\assets\css\app-main.css">
       <Link>css\app-main.css</Link>
     </Content>
@@ -83,20 +80,11 @@
     <Content Include="..\app\src\main\assets\css\components\navigationbar.css">
       <Link>css\components\navigationbar.css</Link>
     </Content>
-    <Content Include="..\app\src\main\assets\css\components\sensors.css">
-      <Link>css\components\sensors.css</Link>
-    </Content>
-    <Content Include="..\app\src\main\assets\css\themes\display.css">
-      <Link>css\theme\display.css</Link>
-    </Content>
     <Content Include="..\app\src\main\assets\css\themes\main.css">
       <Link>css\theme\main.css</Link>
     </Content>
     <Content Include="..\app\src\main\assets\css\themes\navigationbar.css">
       <Link>css\theme\navigationbar.css</Link>
-    </Content>
-    <Content Include="..\app\src\main\assets\display.html">
-      <Link>display.html</Link>
     </Content>
     <Content Include="..\app\src\main\assets\main.html">
       <Link>main.html</Link>
@@ -108,10 +96,8 @@
   <ItemGroup>
     <TypeScriptCompile Include="typescript\buttonclick.ts" />
     <TypeScriptCompile Include="typescript\connection.ts" />
-    <TypeScriptCompile Include="typescript\display.ts" />
     <TypeScriptCompile Include="typescript\main.ts" />
     <TypeScriptCompile Include="typescript\navigationbar.ts" />
-    <TypeScriptCompile Include="typescript\scroll.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="typescript\tsconfig.json" />

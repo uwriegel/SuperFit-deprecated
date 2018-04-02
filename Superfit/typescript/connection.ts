@@ -16,11 +16,6 @@ var Connection = (function () {
         } catch{}
     }
 
-    function initialize(onEvent: (data: SensorEvent) => void) {
-        const webSocket = new WebSocket("ws://localhost:9865/")
-        webSocket.onmessage = e => onEvent(JSON.parse(e.data))
-    }
-    
     function invoke<T>(method: string, param?: any) {
         return new Promise<T>((resolve, reject) => {
             var xmlhttp = new XMLHttpRequest()
@@ -39,11 +34,8 @@ var Connection = (function () {
         })
     }
 
-    var onEvent: (data: SensorData) => void
-
     return {
         checkConnection: checkConnection,
-        initialize: initialize,
         stop: stop
     }
 })()
