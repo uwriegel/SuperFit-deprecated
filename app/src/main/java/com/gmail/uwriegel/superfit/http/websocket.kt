@@ -1,7 +1,10 @@
 package com.gmail.uwriegel.superfit.http
 
-import com.gmail.uwriegel.superfit.sensor.Event
+import com.gmail.uwriegel.superfit.events.EventData
+import com.gmail.uwriegel.superfit.sensor.data
 import com.gmail.uwriegel.superfit.sensor.gpsActive
+import com.gmail.uwriegel.superfit.tracking.LocationData
+import com.gmail.uwriegel.superfit.tracking.currentLocation
 import com.google.gson.Gson
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -34,7 +37,16 @@ class WebSocket(private val client: Socket, header: String) {
             gps = true
             gpsActiveSent = true
         }
-        val event = Event ( com.gmail.uwriegel.superfit.sensor.data, gps)
+
+        val location =
+                if (currentLocation?.equals(recentLocation) != true)
+                    recentLocation
+                else
+                    null
+
+        recentLocation = currentLocation
+
+        val event = EventData( data, gps, location)
         val json = gson.toJson(event)
         val text = json.toString()
         val bytes = text.toByteArray()
@@ -125,6 +137,7 @@ class WebSocket(private val client: Socket, header: String) {
         ostream.flush()
     }
 
+    var recentLocation: LocationData? = null
     var gpsActiveSent = false
 }
 

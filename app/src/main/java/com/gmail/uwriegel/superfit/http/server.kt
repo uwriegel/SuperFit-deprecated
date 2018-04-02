@@ -29,21 +29,6 @@ fun stopServer() {
 }
 
 private fun clientConnected(client: Socket) {
-
-//    fun getSendGpsActive(): ()->String {
-//        var gpsActiveSent = false
-//
-//        return {
-//            if (sendGpsActive && !gpsActiveSent) {
-//                gpsActiveSent = true
-//                """"gps": true,
-//    """
-//            } else ""
-//        }
-//    }
-//
-//    val sendGpsActive = getSendGpsActive()
-
     Thread {
         try {
             val istream = client.getInputStream()
@@ -86,18 +71,6 @@ private fun checkMethod(header: String): String {
 private fun checkWebSocket(header: String): Boolean {
     return header.indexOf("Upgrade: websocket", 0, true) != -1
 }
-
-//val responseBody =
-//        """{
-//    "heartRate": $heartRate,
-//    "speed": $speed,
-//    "distance": $distance,
-//    "cadence": $cadence,
-//    "maxSpeed": $maxSpeed,
-//    "timeSpan": $timeSpan,
-//    ${sendGpsActive()}"averageSpeed": $averageSpeed
-//}"""
-//
 
 private fun sendResponse(client: Socket, payload: String) {
     val contentLength = payload.length

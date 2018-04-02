@@ -28,6 +28,7 @@ class LocationManager(context: Context, dataSource: DataSource) {
         override fun onLocationChanged(location: Location) {
 
             gpsActive = true
+            setCurrentLocation(location)
 
             if (trackPoints == null)
                 trackPoints = dataSource.createTrack(location.longitude, location.latitude, location.time)
@@ -52,8 +53,8 @@ class LocationManager(context: Context, dataSource: DataSource) {
     }
 
     private val locationManager = context.getSystemService(LOCATION_SERVICE) as LocationManager
-    private val LOCATION_REFRESH_TIME = 1000L
-    private val LOCATION_REFRESH_DISTANCE = 10.0F
+    private val LOCATION_REFRESH_TIME = 500L
+    private val LOCATION_REFRESH_DISTANCE = 0.0F
     private var trackPoints: TrackPointsDataSource? = null
 
     init {
