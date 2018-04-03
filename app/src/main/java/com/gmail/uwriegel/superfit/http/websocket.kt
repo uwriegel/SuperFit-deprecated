@@ -64,37 +64,32 @@ class WebSocket(private val client: Socket, header: String) {
                 4
             else 10
 
-        //val buffer: ByteArray = ByteArray(Math.min(20000, headerLength + length))
-        val buffer: ByteArray = ByteArray(headerLength)
+        val buffer = ByteArray(headerLength)
 
-        var position =
-            if (length <= 125) {
-                buffer[0] = FRRROPCODE
-                buffer[1] = length.toByte()
-                2
-            }
-            else if (length <= 65535) {
-                buffer[0] = FRRROPCODE
-                buffer[1] = 126
-                val byteArray = getByteArrayFromShort(length.toShort())
-                buffer[2] = byteArray[0]
-                buffer[3] = byteArray[1]
-                4
-            }
-            else {
-                buffer[0] = FRRROPCODE
-                buffer[1] < 127
-                val byteArray = getByteArrayFromLong(length.toLong())
-                buffer[2] = byteArray[0]
-                buffer[3] = byteArray[1]
-                buffer[4] = byteArray[2]
-                buffer[5] = byteArray[3]
-                buffer[6] = byteArray[4]
-                buffer[7] = byteArray[5]
-                buffer[8] = byteArray[6]
-                buffer[9] = byteArray[7]
-                10
-            }
+        if (length <= 125) {
+            buffer[0] = FRRROPCODE
+            buffer[1] = length.toByte()
+        }
+        else if (length <= 65535) {
+            buffer[0] = FRRROPCODE
+            buffer[1] = 126
+            val byteArray = getByteArrayFromShort(length.toShort())
+            buffer[2] = byteArray[0]
+            buffer[3] = byteArray[1]
+        }
+        else {
+            buffer[0] = FRRROPCODE
+            buffer[1] < 127
+            val byteArray = getByteArrayFromLong(length.toLong())
+            buffer[2] = byteArray[0]
+            buffer[3] = byteArray[1]
+            buffer[4] = byteArray[2]
+            buffer[5] = byteArray[3]
+            buffer[6] = byteArray[4]
+            buffer[7] = byteArray[5]
+            buffer[8] = byteArray[6]
+            buffer[9] = byteArray[7]
+        }
 
         try {
             val ostream = client.getOutputStream()
@@ -109,8 +104,6 @@ class WebSocket(private val client: Socket, header: String) {
                 timer = null
             }
         }
-
-        val ende = 3
     }
 
     fun getByteArrayFromShort(n: Short): ByteArray {

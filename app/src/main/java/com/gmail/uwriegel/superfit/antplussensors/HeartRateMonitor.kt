@@ -19,7 +19,7 @@ class HeartRateMonitor(context: Context, val onNewHeartRate: (newHeartRate: Int)
         })
     }
 
-    fun subscribeToHeartRate(heartRateController: AntPlusHeartRatePcc) = heartRateController.subscribeHeartRateDataEvent { estTimestamp, _, computedHeartRate,_, _, _ ->
+    fun subscribeToHeartRate(heartRateController: AntPlusHeartRatePcc) = heartRateController.subscribeHeartRateDataEvent { _ /*estTimestamp*/, _, computedHeartRate,_, _, _ ->
         run { this@HeartRateMonitor.onNewHeartRate(computedHeartRate) }
     }
 

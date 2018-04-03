@@ -33,12 +33,10 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
 
-// TODO: Location-Permission aus Viewer
 // TODO: FilePermission abfragen im Viewer und im Service
 // TODO: DATABase ändern: wenn track gespeichert, kennzeichnen, damit löschbar
 // TODO: In NavigationBar Möglichkeit, alle Herzfrequenz- und Radsensoren auswählbar machen, Auswahl speichern und kontrollieren
 // TODO: Ausgewähltes Ant+-Gerät direkt ansprechen
-// TODO: TEst
 class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         val isGps = locationManager.isProviderEnabled (LocationManager.GPS_PROVIDER)
 
         if (!isGps)
-            startActivityForResult(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+            startActivityForResult(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0)
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -167,13 +165,10 @@ class MainActivity : AppCompatActivity() {
         try {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.setComponent(ComponentName("eu.selfhost.riegel.superfitdisplay","eu.selfhost.riegel.superfitdisplay.ui.DisplayActivity"))
-            startActivity(intent);
+            startActivity(intent)
 //            intent.action = "eu.selfhost.riegel.superfitdisplay.DISPLAY_SUPERFIT"
 //            startActivity(intent)
-        } catch (e: Exception) {
-            var emil = e
-            val ee = e
-        }
+        } catch(e: Exception)  {}
     }
 
     private fun checkPermissions(): Boolean {

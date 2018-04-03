@@ -34,8 +34,6 @@ class LocationManager(context: Context, dataSource: DataSource) {
                 trackPoints = dataSource.createTrack(location.longitude, location.latitude, location.time)
 
             if (location.hasBearing()) {
-                val affe = 2
-                val aff = affe +8
             }
             trackPoints!!.add(TrackPoint(location.latitude, location.longitude, location.altitude,
                     location.time, location.accuracy, data.speed, data.heartRate))
