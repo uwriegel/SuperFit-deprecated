@@ -33,6 +33,8 @@ fun exportToGpx(outputStream: OutputStream, trackPoints: Sequence<TrackPoint>) {
                             element(null, "ele", it.elevation.toString())
                             element(null, "time", formatRfc3339(Date(it.time)))
                             element(null, "pdop", it.precision.toString())
+                            element(null, "heartrate", it.heartRate.toString())
+                            element(null, "speed", it.speed.toString())
                         })
                     }
                 })

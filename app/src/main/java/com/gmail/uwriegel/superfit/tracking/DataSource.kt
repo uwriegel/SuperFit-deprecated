@@ -90,7 +90,8 @@ class DataSource(context: Context) {
                     DBHandler.KEY_ELEVATION,
                     DBHandler.KEY_TIME,
                     DBHandler.KEY_PRECISION,
-                    DBHandler.KEY_SPEED),
+                    DBHandler.KEY_SPEED,
+                    DBHandler.KEY_HEART_RATE),
                     "${DBHandler.KEY_TRACK_NR} = $trackNumber", null, null)
 
             if (cursor.count > 0) {
@@ -102,7 +103,8 @@ class DataSource(context: Context) {
                             cursor.getDouble(2),
                             cursor.getLong(3),
                             cursor.getFloat(4),
-                            cursor.getFloat(5), 0))
+                            cursor.getFloat(5),
+                            cursor.getInt(6)))
                     if (!cursor.moveToNext())
                         break
                 }
