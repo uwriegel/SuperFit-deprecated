@@ -111,6 +111,10 @@ class SensorService : Service(), ServiceCallback {
         }
     }
 
+    override fun getContext(): Context {
+        return this
+    }
+
     private val NOTIFICATION_ID = 34
     private lateinit var dataSource: DataSource
     private lateinit var locationManager: LocationManager

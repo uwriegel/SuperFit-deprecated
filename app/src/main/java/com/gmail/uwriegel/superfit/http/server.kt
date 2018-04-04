@@ -1,6 +1,11 @@
 package com.gmail.uwriegel.superfit.http
 
+import com.gmail.uwriegel.superfit.events.TrackData
 import com.gmail.uwriegel.superfit.sensor.ServiceCallback
+import com.gmail.uwriegel.superfit.tracking.DataSource
+import com.gmail.uwriegel.superfit.tracking.LocationData
+import com.gmail.uwriegel.superfit.tracking.Track
+import com.google.gson.Gson
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
@@ -46,6 +51,14 @@ private fun clientConnected(client: Socket) {
                     }
                     sendResponse(client, """{"connected": false}""")
                 }
+                "getTrack" -> {
+                    val posLineEnd = header.indexOf("\r\n")
+                    val firstLine = header.substring(0, posLineEnd)
+                    val posEnd = firstLine.lastIndexOf(" ")
+                    val posStart = firstLine.indexOf("/", 5) + 1
+                    val trackNumber = firstLine.substring(posStart, posEnd)
+                    sendTrack(client, trackNumber.toLong())
+                }
                 else -> {
                     if (checkWebSocket((header))) {
                         upgrade(client, header)
@@ -64,12 +77,25 @@ private fun clientConnected(client: Socket) {
 }
 
 private fun checkMethod(header: String): String {
-    val posEnd = header.indexOf(" ", 5)
+    val posEnd1 = header.indexOf("/", 5)
+    val posEnd2 = header.indexOf(" ", 5)
+    val posEnd = Math.min(posEnd1, posEnd2)
     return header.substring(5, posEnd)
 }
 
 private fun checkWebSocket(header: String): Boolean {
     return header.indexOf("Upgrade: websocket", 0, true) != -1
+}
+
+private fun sendTrack(client: Socket, trackNumber: Long) {
+    val dataSource = DataSource(service!!.getContext())
+    val trackPoints = dataSource.getTrackPoints(trackNumber)
+    val locationDatas = trackPoints.map { LocationData(it.longitude, it.latitude) }
+
+    val gson = Gson()
+    val json = gson.toJson(locationDatas.toList().toTypedArray())
+    val text = json.toString()
+    sendResponse(client, text)
 }
 
 private fun sendResponse(client: Socket, payload: String) {

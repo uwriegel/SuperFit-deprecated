@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -24,6 +26,7 @@ import android.widget.Toast
 import com.gmail.uwriegel.superfit.R
 import com.gmail.uwriegel.superfit.sensor.SensorService
 import com.gmail.uwriegel.superfit.tracking.DataSource
+import com.gmail.uwriegel.superfit.tracking.Track
 import com.gmail.uwriegel.superfit.tracking.exportToGpx
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
@@ -161,9 +164,11 @@ class MainActivity : AppCompatActivity() {
         mainWebView.loadUrl("file:///android_asset/main.html")
     }
 
-    private fun display() {
+    private fun display(trackNumber: Long? = null) {
         try {
             val intent = Intent(Intent.ACTION_MAIN)
+            if (trackNumber != null)
+                intent.putExtra("TrackNumber", trackNumber)
             intent.setComponent(ComponentName("eu.selfhost.riegel.superfitdisplay","eu.selfhost.riegel.superfitdisplay.ui.DisplayActivity"))
             startActivity(intent)
 //            intent.action = "eu.selfhost.riegel.superfitdisplay.DISPLAY_SUPERFIT"
@@ -210,28 +215,45 @@ class MainActivity : AppCompatActivity() {
                 navWebView.evaluateJavascript("onTracks($json)", null)
             } }
 
-            @Suppress("DEPRECATION")
             @JavascriptInterface
             fun onTrackSelected(trackNumber: Long) {
                 val dataSource = DataSource(this@MainActivity)
                 val track = dataSource.getTrack(trackNumber)
                 if (track != null)
-                {
-                    val date = Date(track.time)
-                    val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
-
-                    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-                    intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    intent.type = "text/xml"
-                    intent.putExtra(Intent.EXTRA_TITLE, name)
-                    currentTrackNumber = trackNumber
-                    startActivityForResult(intent, CREATE_REQUEST_CODE)
-                }
+                    createTrackChoice(track, trackNumber)
             }
 
         }, "Native")
         navWebView.isHapticFeedbackEnabled = true
         navWebView.loadUrl("file:///android_asset/navigationbar.html")
+    }
+
+    @Suppress("DEPRECATION")
+    private fun createTrackChoice(track: Track, trackNumber: Long) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Ausgewählter Track:")
+        var dialog: AlertDialog? = null
+        builder.setSingleChoiceItems(listOf("Laden", "Speichern...").toTypedArray(), -1, object: DialogInterface.OnClickListener {
+            override fun onClick(p0: DialogInterface?, item: Int) {
+                when(item) {
+                    0 -> display(trackNumber)
+                    1 -> {
+                        val date = Date(track.time)
+                        val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
+
+                        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                        intent.addCategory(Intent.CATEGORY_OPENABLE)
+                        intent.type = "text/xml"
+                        intent.putExtra(Intent.EXTRA_TITLE, name)
+                        currentTrackNumber = trackNumber
+                        startActivityForResult(intent, CREATE_REQUEST_CODE)
+                    }
+                }
+                dialog!!.hide()
+            }
+        })
+        dialog = builder.create()
+        dialog!!.show()
     }
 
     private var currentTrackNumber = -1L
