@@ -58,6 +58,8 @@ private fun clientConnected(client: Socket) {
                     val posStart = firstLine.indexOf("/", 5) + 1
                     val trackNumber = firstLine.substring(posStart, posEnd)
                     sendTrack(client, trackNumber.toLong())
+                    if (service?.stopAfterServing() == true)
+                        stopServer()
                 }
                 else -> {
                     if (checkWebSocket((header))) {

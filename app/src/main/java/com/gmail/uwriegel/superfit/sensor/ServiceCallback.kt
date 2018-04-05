@@ -5,4 +5,5 @@ import android.content.Context
 interface ServiceCallback {
     fun stopService()
     fun getContext(): Context
+    fun stopAfterServing(): Boolean
 }

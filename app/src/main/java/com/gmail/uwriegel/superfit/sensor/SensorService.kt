@@ -111,9 +111,9 @@ class SensorService : Service(), ServiceCallback {
         }
     }
 
-    override fun getContext(): Context {
-        return this
-    }
+    override fun getContext(): Context { return this }
+
+    override fun stopAfterServing(): Boolean { return false }
 
     private val NOTIFICATION_ID = 34
     private lateinit var dataSource: DataSource

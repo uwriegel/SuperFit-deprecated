@@ -24,7 +24,9 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Toast
 import com.gmail.uwriegel.superfit.R
+import com.gmail.uwriegel.superfit.http.startServer
 import com.gmail.uwriegel.superfit.sensor.SensorService
+import com.gmail.uwriegel.superfit.sensor.ServiceCallback
 import com.gmail.uwriegel.superfit.tracking.DataSource
 import com.gmail.uwriegel.superfit.tracking.Track
 import com.gmail.uwriegel.superfit.tracking.exportToGpx
@@ -154,11 +156,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun initialize() {
-        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val started = manager.getRunningServices(Integer.MAX_VALUE).firstOrNull({ SensorService::class.java.name == it.service.className } )!= null
-        if (started)
+        if (isServiceRunning())
             display()
 
         mainWebView.loadUrl("file:///android_asset/main.html")
@@ -166,6 +165,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun display(trackNumber: Long? = null) {
         try {
+            if (!isServiceRunning())
+                startWebServer()
+
             val intent = Intent(Intent.ACTION_MAIN)
             if (trackNumber != null)
                 intent.putExtra("TrackNumber", trackNumber)
@@ -174,6 +176,20 @@ class MainActivity : AppCompatActivity() {
 //            intent.action = "eu.selfhost.riegel.superfitdisplay.DISPLAY_SUPERFIT"
 //            startActivity(intent)
         } catch(e: Exception)  {}
+    }
+
+    @Suppress("DEPRECATION")
+    private fun isServiceRunning(): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        return manager.getRunningServices(Integer.MAX_VALUE).firstOrNull({ SensorService::class.java.name == it.service.className } )!= null
+    }
+
+    private fun startWebServer() {
+        startServer(object: ServiceCallback {
+            override fun stopService() {}
+            override fun getContext(): Context { return this@MainActivity }
+            override fun stopAfterServing(): Boolean { return true }
+        })
     }
 
     private fun checkPermissions(): Boolean {
