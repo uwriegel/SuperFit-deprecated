@@ -163,14 +163,14 @@ class MainActivity : AppCompatActivity() {
         mainWebView.loadUrl("file:///android_asset/main.html")
     }
 
-    private fun display(trackNumber: Long? = null) {
+    private fun display() {
         try {
             if (!isServiceRunning())
                 startWebServer()
 
             val intent = Intent(Intent.ACTION_MAIN)
             if (trackNumber != null)
-                intent.putExtra("TrackNumber", trackNumber)
+                intent.putExtra("TrackNumber", trackNumber!!)
             intent.setComponent(ComponentName("eu.selfhost.riegel.superfitdisplay","eu.selfhost.riegel.superfitdisplay.ui.DisplayActivity"))
             startActivity(intent)
 //            intent.action = "eu.selfhost.riegel.superfitdisplay.DISPLAY_SUPERFIT"
@@ -246,13 +246,14 @@ class MainActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     private fun createTrackChoice(track: Track, trackNumber: Long) {
+        this.trackNumber = trackNumber
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Ausgewählter Track:")
         var dialog: AlertDialog? = null
         builder.setSingleChoiceItems(listOf("Laden", "Speichern...").toTypedArray(), -1, object: DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, item: Int) {
                 when(item) {
-                    0 -> display(trackNumber)
+                    0 -> display()
                     1 -> {
                         val date = Date(track.time)
                         val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
@@ -273,6 +274,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var currentTrackNumber = -1L
+    private var trackNumber: Long? = null
 
     companion object {
         val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
